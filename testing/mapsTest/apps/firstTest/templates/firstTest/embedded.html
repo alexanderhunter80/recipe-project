@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <title>Embed Map Test</title>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- basic map embed -->
+    <!-- <script>
+    function initMap() {
+        var uluru = {lat: -25.363, lng: 131.044};
+        var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: uluru
+        });
+        var marker = new google.maps.Marker({
+        position: uluru,
+        map: map
+        });
+    }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
+    </script> -->
+
+    <!-- map with pins -->
+    <!-- <script>   
+        var map;
+        function initialize() {
+        var myLatlng = new google.maps.LatLng(47.6062,122.3321);
+        var myOptions = {
+            zoom: 4,
+            center: myLatlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+        google.maps.event.addListener(map, 'click', function(event) {
+            placeMarker(event.latLng);
+        });
+        }
+
+        function placeMarker(location) {
+        var marker = new google.maps.Marker({
+            position: location, 
+            map: map
+        });
+
+        map.setCenter(location);
+        }
+        
+    </script> 
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initialize">
+    </script> -->
+
+
+    <!-- workinprogress map code -->
+    <script>
+        function initMap() {
+            var spaceNeedle = {lat: 47.6205, lng: -122.3493};
+            var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: spaceNeedle,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+            var marker = new google.maps.Marker({
+            position: spaceNeedle,
+            map: map
+            });
+
+            google.maps.event.addListener(map, 'click', function(event) {
+                placeMarker(event.latLng);
+                var latitude = event.latLng.lat();
+                var longitude = event.latLng.lng();
+                console.log('Lat '+latitude+', Lng '+longitude)
+            });
+        
+
+            function placeMarker(location) {
+                var marker = new google.maps.Marker({
+                    position: location, 
+                    map: map
+                    
+                });
+
+                map.setCenter(location);
+            }
+        }
+
+        
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
+    </script>
+
+    <style>
+        .container{ padding: 2%; }
+        #map { width: 100%; height: 400px; background-color: grey; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <!-- map goes here -->
+                <div id="map"></div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    
+</body>
+</html>
