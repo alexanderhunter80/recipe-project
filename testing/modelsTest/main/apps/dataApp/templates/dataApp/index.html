@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form action="process" method="post">
+        <label for="name">Recipe Name:</label>
+        <input type="text" name="name">
+        <p>Ingredients:</p>
+        <table>
+            <tr>
+                <th>Qty</th>
+                <th>Unit</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="qty"></td>
+                <td><input type="text" name="unit"></td>
+                <td><input type="text" name="ingredient"></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="qty"></td>
+                <td><input type="text" name="unit"></td>
+                <td><input type="text" name="ingredient"></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="qty"></td>
+                <td><input type="text" name="unit"></td>
+                <td><input type="text" name="ingredient"></td>
+            </tr>
+        </table>
+        <p>Steps:</p>
+        <textarea name="step" rows="4" cols="50"></textarea><br>
+        <textarea name="step" rows="4" cols="50"></textarea><br>
+        <textarea name="step" rows="4" cols="50"></textarea><br>
+        <textarea name="step" rows="4" cols="50"></textarea><br>
+        <p>Notes:</p>
+        <textarea name="notes" rows="4" cols="50"></textarea><br>
+        <input type="submit">
+    </form>
+</body>
+</html>
