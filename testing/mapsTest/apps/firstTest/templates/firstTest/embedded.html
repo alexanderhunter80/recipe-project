@@ -9,6 +9,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap&libraries=geometry">
+    </script>
 
     <!-- basic map embed -->
     <!-- <script>
@@ -63,6 +66,10 @@
     <!-- workinprogress map code -->
     <script>
         var csrftoken = Cookies.get('csrftoken');
+        var markersFromDatabase = {};
+        var allMapMarkers = [];
+        var lastCircle = [];
+        
 
         function csrfSafeMethod(method) {
             // these HTTP methods do not require CSRF protection
@@ -83,9 +90,9 @@
 
 
 
-
+        // send new map marker data to server for storage as Location
         function sendToServer(jsonData){   
-            console.log('csrf token '+csrftoken)
+            console.log('csrf token '+csrftoken);
             $.ajax({
                 url: '/jsonReceiver',
                 type: 'POST',
@@ -99,8 +106,22 @@
             event.preventDefault();
         }
 
+
+        // populate list of map markers from database
         function populateMap(){
-            continue;
+            console.log('AJAX call to populate map?');
+            
+            $.ajax({
+                url: '/populateMap',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log('AJAX call successful');
+                    markersFromDatabase = data['markers'];
+                    console.log('map markers below');
+                    console.log(markersFromDatabase);
+                }
+            })
         }
 
         function initMap() {
@@ -110,19 +131,17 @@
             center: spaceNeedle,
             mapTypeId: google.maps.MapTypeId.ROADMAP
             });
-            var marker = new google.maps.Marker({
-            position: spaceNeedle,
-            map: map
-            });
-            // for (var l in locData){
-            //     new google.maps.Marker({
-            //         position: {lat: l['lat'], lng: l['lng']},
-            //         map: map 
-            //     })
-            // }
+            // unnecessary Space Needle marker
+            // var marker = new google.maps.Marker({
+            // position: spaceNeedle,
+            // map: map
+            // });
+            // populateMap() was here
+
 
             google.maps.event.addListener(map, 'click', function(event) {
                 placeMarker(event.latLng);
+                map.setCenter(event.latLng);
                 var latitude = event.latLng.lat();
                 var longitude = event.latLng.lng();
                 console.log('Lat '+latitude+', Lng '+longitude)
@@ -130,43 +149,67 @@
                 sendToServer(data);
             });
 
+            populateMap();  // returns markersFromDatabase
+            google.maps.event.addListenerOnce(map, 'idle', function() {
+                for (var mkr in markersFromDatabase) {
+                    console.log('creating map marker at '+markersFromDatabase[mkr]['latitude']+' '+markersFromDatabase[mkr]['longitude'])
+                    placeMarker({lat:markersFromDatabase[mkr]['latitude'],lng:markersFromDatabase[mkr]['longitude']})
+                }    
+            })
 
-        
+            google.maps.event.addListener(map, 'bounds_changed', function() {
+                // add bounds check, AJAX to server and filter results
+                for (var mkr in markersFromDatabase) {
+                    console.log('creating map marker at '+markersFromDatabase[mkr]['latitude']+' '+markersFromDatabase[mkr]['longitude'])
+                    placeMarker({lat:markersFromDatabase[mkr]['latitude'],lng:markersFromDatabase[mkr]['longitude']})
+                }    
+            })
 
             function placeMarker(location) {
                 var marker = new google.maps.Marker({
                     position: location, 
-                    map: map
-                    
+                    map: map 
                 });
-
-                map.setCenter(location);
-
                 google.maps.event.addListener(marker, 'click', function(event){
-                var latitude = event.latLng.lat();
-                var longitude = event.latLng.lng();
-                console.log( latitude + ', ' + longitude );
-
-                radius = new google.maps.Circle({map: map,
-                    radius: 100000,
-                    center: event.latLng,
-                    fillColor: '#777',
-                    fillOpacity: 0.1,
-                    strokeColor: '#AA0000',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    draggable: false,    // Dragable
-                    editable: false      // Resizable
+                    map.setCenter(event.latLng);
+                    if(lastCircle[0]){
+                        lastCircle[0].setMap(null);
+                    }
+                    lastCircle = [];
+                    lastCircle.push(new google.maps.Circle({
+                        map: map,
+                        radius: 1000000,
+                        center: event.latLng,
+                        fillColor: '#777',
+                        fillOpacity: 0.1,
+                        strokeColor: '#AA0000',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        draggable: false,    // Dragable
+                        editable: false      // Resizable
+                        })
+                    );
+                    // test for markers in circle
+                    var circleBounds = lastCircle[0].getBounds();
+                    console.log(circleBounds);
+                    for(var m in allMapMarkers){
+                        console.log(allMapMarkers[m].getPosition());
+                        console.log(circleBounds.contains(allMapMarkers[m].getPosition()));
+                        // if (google.maps.geometry.poly.containsLocation(allMapMarkers[m].getPosition(), lastCircle[0])){
+                        //     console.log('FOUND MARKER IN CIRCLE');
+                        // }
+                    }
                 });
-            });
+                allMapMarkers.push(marker);
+                // console.log(allMapMarkers);
             }
-        }
+
+            
+        }  // end of initMap()
 
         
     </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
-    </script>
+
 
     <style>
         .container{ padding: 2%; }

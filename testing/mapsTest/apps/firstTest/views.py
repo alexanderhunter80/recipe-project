@@ -4,7 +4,11 @@ import json
 from .models import Location, LocationManager #pylint: disable = E0402
 
 
-
+#
+#
+#  rendering routes
+#
+#
 
 def index(request):
 
@@ -28,7 +32,11 @@ def embed(request):
 def addLoc(request):
     pass
 
-
+#
+#
+# AJAX calls and responses
+#
+#
 
 def jsonReceiver(request):
     if request.is_ajax():
@@ -48,3 +56,12 @@ def jsonReceiver(request):
         
 
     return HttpResponse("OK")
+
+def populateMap(request):
+    if request.is_ajax():
+        allMarkers = list(Location.objects.all().values('id','latitude','longitude'))
+        print(allMarkers)
+        return JsonResponse({'markers' : allMarkers})
+    
+    return HttpResponse("OK")
+
