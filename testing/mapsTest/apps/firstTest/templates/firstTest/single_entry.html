@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <title>Place Your Recipe</title>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
+    </script>
+    <script>
+        var csrftoken = Cookies.get('csrftoken');
+
+
+        // set up AJAX to include csrf token in all headers
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+
+        // create map
+        function initMap() {
+            var spaceNeedle = {lat: 47.6205, lng: -122.3493};
+            var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: spaceNeedle,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            // attach click listener that creates a marker, erasing previous marker if necessary
+            var marker;
+            google.maps.event.addListener(map, 'click', function(event) {
+                if (marker != null){
+                    marker.setMap(null);
+                }
+                marker = new google.maps.Marker({
+                    position: event.latLng,
+                    map: map,
+                    draggable: true
+                })
+                map.setCenter(event.latLng);
+                var latitude = event.latLng.lat();
+                var longitude = event.latLng.lng();
+                console.log('Lat '+latitude+', Lng '+longitude)
+
+                // recenter map when marker is dragged
+                google.maps.event.addListener(marker, 'dragend', function(event){
+                    map.setCenter(event.latLng);
+                })
+                
+                // open infoWindow on mouseover, close again when mouseout
+                var infoWindow;
+                google.maps.event.addListener(marker, 'mouseover', function(event){
+                    infoString = '<div id="content"><p>Latitude: '+event.latLng.lat()+'</p><p>Longitude: '+event.latLng.lng()+'</p></div>'
+                    console.log(infoString);
+                    infoWindow = new google.maps.InfoWindow({
+                        content: infoString
+                    })
+                    infoWindow.open(map, marker);
+                })
+                google.maps.event.addListener(marker, 'mouseout', function(event){
+                    infoWindow.close()
+                })
+            });
+
+            
+        }  // end of initMap()
+
+
+    </script>
+    <style>
+        .container{ padding: 2%; }
+        #map { width: 100%; height: 400px; background-color: grey; }
+        #content {}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <!-- map goes here -->
+                <div id="map"></div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </div>
+</body>
+</html>

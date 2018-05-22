@@ -6,5 +6,6 @@ urlpatterns = [
     path('embed/addLoc', views.addLoc),
     path('jsonReceiver', views.jsonReceiver),
     path('populateMap', views.populateMap),
+    path('placeRecipe', views.placeRecipe),
     path('', views.index)
 ]

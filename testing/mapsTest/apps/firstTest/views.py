@@ -29,6 +29,12 @@ def embed(request):
 
 
 
+def placeRecipe(request):
+
+    return render(request, 'firstTest/single_entry.html')
+
+
+
 def addLoc(request):
     pass
 
