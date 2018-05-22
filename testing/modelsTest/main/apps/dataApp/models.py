@@ -14,17 +14,32 @@ class RecipeManager(models.Manager):
         return result
 
 class Ingredient(models.Model):
-    qty = models.CharField(max_length=255)
-    unit = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 class Recipe(models.Model):
     name = models.CharField(max_length=255)
-    ingredient = models.ManyToManyField(Ingredient, related_name="recipe_id")
     step = models.TextField
-    notes = models.TextField
+    notes = models.TextField(max_length=1000)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class Entry(models.Model):
+    qty = models.FloatField
+    unit = models.CharField(max_length=100)
+    recipe_id = models.ForeignKey(Recipe, related_name="ingredient_entry", on_delete=models.CASCADE)
+    ingredient_id = models.ForeignKey(Ingredient, related_name="recipe_entry", on_delete=models.CASCADE)
+
+class Cookbook(models.Model):
+    name = models.CharField(max_length=255)
+    notes = models.TextField(max_length=1000)
+    recipes = models.ManyToManyField(Recipe, related_name="cookbooks")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Location(models.Model):
+    latitude = models.FloatField
+    longitude = models.FloatField
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
