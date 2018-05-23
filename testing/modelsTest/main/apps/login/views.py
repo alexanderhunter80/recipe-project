@@ -4,4 +4,4 @@ from django.contrib import messages
 
 def index(request):
     response = "login page"
-    return HttpResponse(response)
+    return render(request, "login/login.html")
