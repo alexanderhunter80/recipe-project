@@ -6,7 +6,7 @@ def index(request):
     response = "testing"
     return render(request, "dataApp/index.html")
 
-def process(request):
+def create(request):
     response = Recipe.objects.recipe_validator(request.POST)
     if response['status'] == False:
         for error in response['errors']:
