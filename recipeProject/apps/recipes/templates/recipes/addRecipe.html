@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Recipe</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
+    </script>
+    <script>
+
+        // jQuery wrapper
+        $( document ).ready(function() {
+            var rowsInIngred = 1;
+            var rowsInDirect = 1;
+
+            // toggle sidebar
+            $("#toggleSidebar").click(function(){
+                $("#sidebar").toggleClass('col-sm-2 d-none');
+                $("#body").toggleClass('col-sm-10 col-sm-12');
+                $(".alsoHide").toggleClass('hide');
+            });
+
+            $("#addIngred").click(function(){
+                event.preventDefault();
+                rowsInIngred++;
+                var newRowString = "";
+                newRowString += '<div class="row"><input name="qty'+rowsInIngred+'" type="text" class="form-qty"><select name="units'+rowsInIngred+'" class="form-units"><option value="count">count</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="cup">cup</option><option value="pint">pint</option><option value="quart">quart</option><option value="gallon">gallon</option><option value="oz">oz</option><option value="fl oz">fl oz</option><option value="pound">pound</option><option value="g">g</option><option value="kg">kg</option><option value="mL">mL</option><option value="L">L</option><option value="dash">dash</option><option value="to taste">to taste</option></select><input name="ingred'+rowsInIngred+'" type="text" class="form-ingred"></div>';
+                $(newRowString).insertBefore($("#addIngredRow"));
+            });
+
+            $("#addDirect").click(function(){
+                event.preventDefault();
+                rowsInDirect++;
+                var newRowString = "";
+                newRowString += '<div class="row"><input name="direct'+rowsInDirect+'" type="text"></div>';
+                $(newRowString).insertBefore($("#addDirectRow"));
+            });
+
+        });
+    
+    </script>
+    <style>
+        .navbar{ height: 5%; background-color: lightgrey; margin: 0; }
+        h1{ font-size: 36px; text-align: center; }
+        #sidebar, #body{ padding: 1%; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="col-lg-1 col-sm-1">
+                <button id="toggleSidebar" class="btn btn-primary">Nav</button>
+            </div>
+            <div class="col-lg-4 col-sm-1"></div>
+            <div class="col-lg-2 col-sm-8"><h1 class="align-middle">Cookr</h1></div>
+            <div class="col-lg-5 col-sm-2"></div>
+        </div>
+    </nav>
+    <div class="wrapper" id="wrapper">
+        <div class="row">
+            <div id="sidebar" class="col-sm-2">
+                <ul class="sidebar-nav">
+                    <li>Your Recipes</li>
+                    <li>Starred Recipes</li>
+                    <li>Your Cookbooks
+                        <ul>
+                            <li>(for loop)</li>
+                            <li>Book 1</li>
+                            <li>Book 2</li>
+                            <li>Book 3</li>
+                        </ul>
+                    </li>
+                    <hr>
+                    <li>Map Search</li>
+                    <li>Name Search</li>
+                    <li>User Search</li>
+                    <hr>
+                    <li>Your Profile</li>
+                    <li>Log Out</li>
+                </ul>
+            </div>
+            <!-- end of sidebar -->
+
+            <!-- body -->
+            <div id="body" class="col-sm-10">
+                <div class="container-fluid">
+                <form action="/recipes/create" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <h2 class='text-center'>Display Name</h2>    
+                    </div>
+                    <div class="row">
+                        <div class='col-6 pl-4 pr-3 bg-danger'>
+                            <h2>map</h2>
+                        </div>
+                        <div class='col-6 pl-3 pr-4 bg-secondary' id="notes">
+                            <h2>notes</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6" id="ingredients">
+                            <div class="row">
+                                <h2>ingredients</h2>
+                            </div>
+                            <div class="row">
+                                <input name="qty1" type="text" class="form-qty">
+                                <select name="units1" class="form-units">
+                                    <option value="count">count</option>
+                                    <option value="tsp">tsp</option>
+                                    <option value="tbsp">tbsp</option>
+                                    <option value="cup">cup</option>
+                                    <option value="pint">pint</option>
+                                    <option value="quart">quart</option>
+                                    <option value="gallon">gallon</option>
+                                    <option value="oz">oz</option>
+                                    <option value="fl oz">fl oz</option>
+                                    <option value="pound">pound</option>
+                                    <option value="g">g</option>
+                                    <option value="kg">kg</option>
+                                    <option value="mL">mL</option>
+                                    <option value="L">L</option>
+                                    <option value="dash">dash</option>
+                                    <option value="to taste">to taste</option>
+                                </select>
+                                <input name="ingred1" type="text" class="form-ingred">
+                            </div>
+                            <div class="row" id="addIngredRow">
+                                <button class="btn btn-primary" id="addIngred">add row</button>
+                            </div>
+                        </div>
+                        <div class="col-6" id="directions">
+                            <div class="row">
+                                <h2>directions</h2>
+                            </div>
+                            <div class="row">
+                                <input name="direct1" type="text">
+                            </div>
+                            <div class="row" id="addDirectRow">
+                                <button class="btn btn-primary" id="addDirect">add row</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" style="margin-top: 2%;">
+                        <button type="submit" class="btn btn-secondary">post data</button>
+                    </div>
+                </form> 
+                </div>
+            </div>
+        </div>
+
+
+</body>
+</html>
