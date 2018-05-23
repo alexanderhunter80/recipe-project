@@ -157,13 +157,13 @@
                 }    
             })
 
-            // google.maps.event.addListener(map, 'bounds_changed', function() {
-            //     // add bounds check, AJAX to server and filter results
-            //     for (var mkr in markersFromDatabase) {
-            //         console.log('creating map marker at '+markersFromDatabase[mkr]['latitude']+' '+markersFromDatabase[mkr]['longitude'])
-            //         placeMarker({lat:markersFromDatabase[mkr]['latitude'],lng:markersFromDatabase[mkr]['longitude']})
-            //     }    
-            // })
+            google.maps.event.addListener(map, 'bounds_changed', function() {
+                // add bounds check, AJAX to server and filter results
+                for (var mkr in markersFromDatabase) {
+                    console.log('creating map marker at '+markersFromDatabase[mkr]['latitude']+' '+markersFromDatabase[mkr]['longitude'])
+                    placeMarker({lat:markersFromDatabase[mkr]['latitude'],lng:markersFromDatabase[mkr]['longitude']})
+                }    
+            })
 
             function placeMarker(location) {
                 var marker = new google.maps.Marker({

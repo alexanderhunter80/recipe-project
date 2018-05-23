@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <title>Find Recipes Near Position</title>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap&libraries=geometry">
+    </script>
+    <script>
+        var csrftoken = Cookies.get('csrftoken');
+        var markersFromDatabase;
+        var map;
+        var allMapMarkers = [];
+        var marker;
+        var searchRadius;
+
+        // set up AJAX to include csrf token in all headers
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+
+        // create new marker, default to hidden
+        function placeMarker(location) {
+            console.log('creating map marker at '+location['lat']+' '+location['lng'])
+            var marker = new google.maps.Marker({
+                position: location, 
+                map: map,
+                visible: false // set to false
+            });
+            return marker;
+        }
+        
+        // populate list of map markers from database
+        function populateMap(){
+            console.log('AJAX call to populate map?');
+            
+            $.ajax({
+                url: '/populateMap',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log('AJAX call successful');
+                    markersFromDatabase = data['markers'];
+                    console.log('map markers below');
+                    console.log(markersFromDatabase);
+                }
+            })
+        }
+
+
+
+        // create map
+        function initMap() {
+            var spaceNeedle = {lat: 47.6205, lng: -122.3493};
+            map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: spaceNeedle,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            populateMap();
+            // get all markers and add to map
+            google.maps.event.addListenerOnce(map, 'idle', function() {
+                for (var mkr in markersFromDatabase) {
+                    console.log(markersFromDatabase[mkr]);
+                    var newMarker = placeMarker({lat:markersFromDatabase[mkr]['latitude'],lng:markersFromDatabase[mkr]['longitude']})
+                    allMapMarkers.push(newMarker);
+                }
+                console.log('allMapMarkers');
+                console.log(allMapMarkers);
+            });
+            
+
+            // attach click listener that creates a marker, erasing previous marker if necessary
+            google.maps.event.addListener(map, 'click', function(event) {
+                if (marker != null){
+                    marker.setMap(null);
+                }
+                var centerIcon = {
+                    url: 'https://lh4.ggpht.com/Tr5sntMif9qOPrKV_UVl7K8A_V3xQDgA7Sw_qweLUFlg76d_vGFA7q1xIKZ6IcmeGqg',
+                    scaledSize: new google.maps.Size(65,65)
+                }
+                marker = new google.maps.Marker({
+                    position: event.latLng,
+                    map: map,
+                    draggable: true,
+                    icon: centerIcon
+                })
+                if (searchRadius != null){
+                    searchRadius.setMap(null);
+                }
+                searchRadius = new google.maps.Circle({
+                    map: map,
+                    radius: 1000000,
+                    center: event.latLng,
+                    fillColor: '#777',
+                    fillOpacity: 0.1,
+                    strokeColor: '#AA0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    draggable: false,
+                    editable: false
+                    })
+                map.setCenter(event.latLng);
+                checkInRadius();
+
+                // recenter map and radius when marker is dragged
+                google.maps.event.addListener(marker, 'dragend', function(event){
+                    map.setCenter(event.latLng);
+                    searchRadius.setCenter(event.latLng);
+                    checkInRadius();
+                })
+
+                // check for markers in circle
+                function checkInRadius(){
+                    var circleBounds = searchRadius.getBounds();
+                        console.log(circleBounds);
+                        for(var m in allMapMarkers){
+                            var isInCircle = circleBounds.contains(allMapMarkers[m].getPosition());
+                            if (isInCircle){
+                                allMapMarkers[m].setVisible(true);
+                            }
+                            else {
+                                allMapMarkers[m].setVisible(false)
+                            };
+                        }
+                }
+                
+            });
+            
+        }  // end of initMap()
+
+
+
+    </script>
+    <style>
+        .container{ padding: 2%; }
+        #map { width: 100%; height: 400px; background-color: grey; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <!-- map goes here -->
+                <div id="map"></div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </div>
+</body>
+</html>

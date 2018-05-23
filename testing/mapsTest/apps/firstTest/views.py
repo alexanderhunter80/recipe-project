@@ -24,7 +24,6 @@ def embed(request):
     # have JS make an AJAX call to a new, AJAX-only route
     # AJAX route returns a dictionary using syntax:  return JsonResponse({'foo':'bar'})
 
-
     return render(request, 'firstTest/embedded.html') 
 
 
@@ -32,6 +31,13 @@ def embed(request):
 def placeRecipe(request):
 
     return render(request, 'firstTest/single_entry.html')
+
+
+
+
+def mapSearch(request):
+
+    return render(request, 'firstTest/reverse_search.html')
 
 
 
@@ -66,6 +72,7 @@ def jsonReceiver(request):
 def populateMap(request):
     if request.is_ajax():
         allMarkers = list(Location.objects.all().values('id','latitude','longitude'))
+        print('JSON all markers')
         print(allMarkers)
         return JsonResponse({'markers' : allMarkers})
     

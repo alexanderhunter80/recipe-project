@@ -7,5 +7,6 @@ urlpatterns = [
     path('jsonReceiver', views.jsonReceiver),
     path('populateMap', views.populateMap),
     path('placeRecipe', views.placeRecipe),
+    path('mapSearch', views.mapSearch),
     path('', views.index)
 ]
