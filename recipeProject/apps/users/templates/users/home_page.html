@@ -29,8 +29,13 @@
 				Password: <input class="form-control-sm mb-3" type='password' name='pw'><br>
 				<input class='btn btn-outline-light btn-sm' type='submit' value='Sign-in'>
 				<a class='btn btn-primary btn-sm'href="http://localhost:8000/accounts/facebook/login/?process=login">Login with Facebook</a><br>
-				<a class='btn btn-primary btn-sm mt-2'href="http://localhost:8000/accounts/facebook/login/?process=login">Login with Google</a>
+				<a class='btn btn-primary btn-sm mt-2'href="http://localhost:8000/accounts/google/login/?process=login">Login with Google</a>
 			</form>
+			{% if messages %}
+				{% for message in messages %}
+					{{ message }}
+				{% endfor %}
+			{% endif %}
 		</div>
 		<div class='carousel-item active'>
 			<img src="{% static 'users/img/tomato.png' %}" class="img-fluid">
