@@ -60,9 +60,14 @@ def create(request):
             print('ingredList',ingredList)  
             print('directList',directList)
 
-        newRecipe = Recipe.objects.create(name=allData['name'],steps=directList,notes=allData['notes'],user_id=1) # change this fake ass user_id
+        newRecipe = Recipe.objects.create(name=allData['name'],steps=directList,notes=allData['notes'],user_id=request.user.id)
         print('creating new recipe')
         print(newRecipe)
+        print(newRecipe.user.username)
+        theirRecipes = Profile.objects.get(id=request.user.id).recipes.all()
+        print(theirRecipes)
+        for each in theirRecipes:
+            print(each.name)
         for e in ingredList:
             if e['ingred'] in Ingredient.objects.all().values('name'):
                 print('found ingredient in table')
@@ -120,7 +125,7 @@ def show(request, n):
             'name' : r.name,
             'notes' : r.notes,
             'steps' : stepsList,
-            # 'user' : user displayname,
+            'user' : r.user.username,
             'ingredients' : ingList,
             'cookbooks' : cookbooks,
             'recipeObject' : r
@@ -151,8 +156,42 @@ def showAjax(request, n):
 
 
 def edit(request, n):
-    pass
-    return HttpResponse("501 Not Implemented: edit")
+
+    r = Recipe.objects.get(id=n)
+    print(r)
+    ingList = []
+    for e in r.entries.all():
+        print(e)
+        entry = {}
+        entry['qty'] = e.qty
+        entry['units'] = e.unit
+        entry['name'] = e.ingredient.name
+        ingList.append(entry)
+    print(r.steps)
+    print('list of ingredient rows')
+    print(ingList)
+
+    stepsList = r.steps.replace('[','')
+    stepsList = stepsList.replace(']','')
+    stepsList = stepsList.replace(" '",'')
+    stepsList = stepsList.replace("'",'')
+    stepsList = stepsList.split(',')
+    print(stepsList)
+
+    cookbooks = populateBooks()
+
+    context = {
+        'recipeObject' : r,
+        'id' : r.id,
+        'name' : r.name,
+        'notes' : r.notes,
+        'steps' : stepsList,
+        'user' : r.user.username,
+        'ingredients' : ingList,
+        'cookbooks' : cookbooks
+    }
+
+    return render(request, 'recipes/editRecipe.html', context)
 
 def confirmDelete(request, n):
     pass

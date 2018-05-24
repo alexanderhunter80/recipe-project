@@ -38,7 +38,7 @@ class Recipe(models.Model):
     name = models.CharField(max_length=255)
     steps = models.TextField()
     notes = models.TextField(max_length=1000)
-    user = models.ForeignKey(User, related_name="recipes", on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, related_name="recipes", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = RecipeManager()

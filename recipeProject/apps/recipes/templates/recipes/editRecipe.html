@@ -32,7 +32,7 @@
                 event.preventDefault();
                 rowsInIngred++;
                 var newRowString = "";
-                newRowString += '<div class="row"><input name="qty'+rowsInIngred+'" type="text" class="form-qty"><select name="units'+rowsInIngred+'" class="form-units"><option value="count">count</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="cup">cup</option><option value="pint">pint</option><option value="quart">quart</option><option value="gallon">gallon</option><option value="oz">oz</option><option value="fl oz">fl oz</option><option value="pound">pound</option><option value="g">g</option><option value="kg">kg</option><option value="mL">mL</option><option value="L">L</option><option value="dash">dash</option><option value="to taste">to taste</option></select><input name="ingred'+rowsInIngred+'" type="text" class="form-ingred"></div>';
+                newRowString += '<div class="row dynamicIngred'+rowsInIngred+'"><input name="qty'+rowsInIngred+'" type="text" class="form-qty"><select name="units'+rowsInIngred+'" class="form-units"><option value="count">count</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="cup">cup</option><option value="pint">pint</option><option value="quart">quart</option><option value="gallon">gallon</option><option value="oz">oz</option><option value="fl oz">fl oz</option><option value="pound">pound</option><option value="g">g</option><option value="kg">kg</option><option value="mL">mL</option><option value="L">L</option><option value="dash">dash</option><option value="to taste">to taste</option></select><input name="ingred'+rowsInIngred+'" type="text" class="form-ingred"></div>';
                 $(newRowString).insertBefore($("#addIngredRow"));
             });
 
@@ -40,8 +40,24 @@
                 event.preventDefault();
                 rowsInDirect++;
                 var newRowString = "";
-                newRowString += '<div class="row"><input name="direct'+rowsInDirect+'" type="text"></div>';
+                newRowString += '<div class="row dynamicDirect'+rowsInDirect+'"><input name="direct'+rowsInDirect+'" type="text"></div>';
                 $(newRowString).insertBefore($("#addDirectRow"));
+            });
+
+            $("#removeIngred").click(function(){
+                event.preventDefault();
+                $(".dynamicIngred"+rowsInIngred).remove();
+                if(rowsInIngred>1){
+                    rowsInIngred--;
+                }
+            });
+
+            $("#removeDirect").click(function(){
+                event.preventDefault();
+                $(".dynamicDirect"+rowsInDirect).remove();
+                if(rowsInDirect>1){
+                    rowsInDirect--;
+                }
             });
 
             // add latLng to POST
@@ -248,11 +264,11 @@
                             <form class="form-group" action="/recipes/create" method="POST" id="recipeForm">
                                 {% csrf_token %}
                                 <div class="row">
-                                    <h2 class='display-5 ml-2'>Add a new recipe:</h2>    
+                                    <h2 class='display-5 ml-2'>Edit recipe:</h2>    
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        <input class='form-control mb-3'type="text" name="name" placeholder="add recipe name">
+                                        <input class='form-control mb-3'type="text" name="name" value="{{ name }}">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -260,7 +276,7 @@
                                         <h2>map</h2>
                                     </div>
                                     <div class='col-6 pl-3 pr-4' id="notes">
-                                        <textarea class='form-control h-100 w-100'name="notes" placeholder="Leave a comment or description about your recipe..." style="border-radius:7px;"></textarea>
+                                        <textarea class='form-control h-100 w-100'name="notes" value="{{ notes }}" style="border-radius:7px;"></textarea>
                                     </div>
                                 </div>
                                     <div class="row">
@@ -292,17 +308,21 @@
                                             </div>
                                             <div class="row" id="addIngredRow">
                                                 <button class="btn btn-outline-danger btn-sm mt-2 mb-2 shadow" id="addIngred">add row</button>
+                                                <button class="btn btn-outline-danger btn-sm mt-2 mb-2 shadow" id="removeIngred">remove row</button>
                                             </div>
                                         </div>
                                         <div class="col-6 pl-3 pt-3" id="directions">
                                             <div class="row">
                                                 <h3>Directions:</h3>
                                             </div>
+                                            {% for s in steps %}
                                             <div class="row">
-                                                <input name="direct1" type="text">
+                                                <input name="direct{{ forloop.counter }}" type="text" placeholder="{{ steps.forloop.counter }}">
                                             </div>
+                                            {% endfor %}
                                             <div class="row" id="addDirectRow">
                                                 <button class="btn btn-outline-danger btn-sm mt-2 mb-2 shadow" id="addDirect">add row</button>
+                                                <button class="btn btn-outline-danger btn-sm mt-2 mb-2 shadow" id="removeDirect">remove row</button>
                                             </div>
                                         </div>
                                     </div>
