@@ -16,13 +16,30 @@
 
         // jQuery wrapper
         $( document ).ready(function() {
+            var rowsInIngred = 1;
+            var rowsInDirect = 1;
 
             // toggle sidebar
             $("#toggleSidebar").click(function(){
                 $("#sidebar").toggleClass('col-sm-2 d-none');
                 $("#body").toggleClass('col-sm-10 col-sm-12');
                 $(".alsoHide").toggleClass('hide');
+            });
 
+            $("#addIngred").click(function(){
+                event.preventDefault();
+                rowsInIngred++;
+                var newRowString = "";
+                newRowString += '<div class="row"><input name="qty'+rowsInIngred+'" type="text" class="form-qty"><select name="units'+rowsInIngred+'" class="form-units"><option value="count">count</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="cup">cup</option><option value="pint">pint</option><option value="quart">quart</option><option value="gallon">gallon</option><option value="oz">oz</option><option value="fl oz">fl oz</option><option value="pound">pound</option><option value="g">g</option><option value="kg">kg</option><option value="mL">mL</option><option value="L">L</option><option value="dash">dash</option><option value="to taste">to taste</option></select><input name="ingred'+rowsInIngred+'" type="text" class="form-ingred"></div>';
+                $(newRowString).insertBefore($("#addIngredRow"));
+            });
+
+            $("#addDirect").click(function(){
+                event.preventDefault();
+                rowsInDirect++;
+                var newRowString = "";
+                newRowString += '<div class="row"><input name="direct'+rowsInDirect+'" type="text"></div>';
+                $(newRowString).insertBefore($("#addDirectRow"));
             });
             
 
@@ -116,6 +133,7 @@
             <!-- end of sidebar -->
 
             <!-- body -->
+
             <div id="body" class="col-sm-10 border-left p-0">
                 <div class="container-fluid ">
                     <div class="row">
@@ -138,9 +156,9 @@
                         </div>
                         <div class='col-6 p-3 off_white'>
                             <h2>Directions</h2>
+
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

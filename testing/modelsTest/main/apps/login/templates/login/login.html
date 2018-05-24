@@ -7,6 +7,12 @@
     <title>Document</title>
 </head>
 <body>
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+    <br>
     <a href="/accounts/login">Google Login</a><br>
     <a href="/accounts/logout">Google Logout</a>
 </body>
