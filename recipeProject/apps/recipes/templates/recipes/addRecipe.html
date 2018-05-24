@@ -12,11 +12,14 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
     </script>
     <script>
+        var rowsInIngred = 1;
+        var rowsInDirect = 1;
+        var postLat;
+        var postLng;
 
         // jQuery wrapper
         $( document ).ready(function() {
-            var rowsInIngred = 1;
-            var rowsInDirect = 1;
+
 
             // toggle sidebar
             $("#toggleSidebar").click(function(){
@@ -41,13 +44,77 @@
                 $(newRowString).insertBefore($("#addDirectRow"));
             });
 
+            // add latLng to POST
+            $("#fake-submit").click( function() {
+                event.preventDefault();
+                console.log(postLat+' '+postLng)
+                $('<input type="hidden" name="lat" value="'+postLat+'">').insertBefore('#endForm');
+                $('<input type="hidden" name="lng" value="'+postLng+'">').insertBefore('#endForm');
+                $('#recipeForm').submit();
+            });
+
         });
+
+        // create map
+        function initMap() {
+            var spaceNeedle = {lat: 47.6205, lng: -122.3493};
+            var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: spaceNeedle,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            // attach click listener that creates a marker, erasing previous marker if necessary
+            var marker;
+            google.maps.event.addListener(map, 'click', function(event) {
+                if (marker != null){
+                    marker.setMap(null);
+                }
+                marker = new google.maps.Marker({
+                    position: event.latLng,
+                    map: map,
+                    draggable: true
+                })
+                map.setCenter(event.latLng);
+                postLat = event.latLng.lat();
+                postLng = event.latLng.lng();
+                console.log('Lat '+postLat+', Lng '+postLng);
+
+                // recenter map when marker is dragged
+                google.maps.event.addListener(marker, 'dragend', function(event){
+                    map.setCenter(event.latLng);
+                    postLat = event.latLng.lat();
+                    postLng = event.latLng.lng();
+                    console.log('Lat '+postLat+', Lng '+postLng);
+                })
+                
+                // open infoWindow on mouseover, close again when mouseout
+                var infoWindow;
+                google.maps.event.addListener(marker, 'mouseover', function(event){
+                    infoString = '<div id="content"><p>Latitude: '+event.latLng.lat()+'</p><p>Longitude: '+event.latLng.lng()+'</p></div>'
+                    console.log(infoString);
+                    infoWindow = new google.maps.InfoWindow({
+                        content: infoString
+                    })
+                    infoWindow.open(map, marker);
+                })
+                google.maps.event.addListener(marker, 'mouseout', function(event){
+                    infoWindow.close()
+                })
+            });
+
+            
+        }  // end of initMap()
+
+
+
     
     </script>
     <style>
         .navbar{ height: 5%; background-color: lightgrey; margin: 0; }
         h1{ font-size: 36px; text-align: center; }
         #sidebar, #body{ padding: 1%; }
+        #map{ height: 250px; }
     </style>
 </head>
 <body>
@@ -89,17 +156,23 @@
             <!-- body -->
             <div id="body" class="col-sm-10">
                 <div class="container-fluid">
-                <form action="/recipes/create" method="POST">
+                <form action="/recipes/create" method="POST" id="recipeForm">
                     {% csrf_token %}
                     <div class="row">
                         <h2 class='text-center'>Display Name</h2>    
                     </div>
                     <div class="row">
-                        <div class='col-6 pl-4 pr-3 bg-danger'>
+                        <div class="col-6">
+                            <input type="text" name="name" placeholder="recipe name">
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class='col-6 pl-4 pr-3' id="map">
                             <h2>map</h2>
                         </div>
-                        <div class='col-6 pl-3 pr-4 bg-secondary' id="notes">
-                            <h2>notes</h2>
+                        <div class='col-6 pl-3 pr-4' id="notes">
+                            <textarea name="notes" placeholder="notes" rows=8></textarea>
                         </div>
                     </div>
                     <div class="row">
@@ -147,8 +220,9 @@
 
                     </div>
                     <div class="row" style="margin-top: 2%;">
-                        <button type="submit" class="btn btn-secondary">post data</button>
+                        <button class="btn btn-secondary" id="fake-submit">post data</button>
                     </div>
+                    <div id="endForm"></div>
                 </form> 
                 </div>
             </div>
