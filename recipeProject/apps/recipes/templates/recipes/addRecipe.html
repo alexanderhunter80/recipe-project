@@ -6,10 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Add Recipe</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
+
     </script>
     <script>
         var rowsInIngred = 1;
@@ -104,72 +106,143 @@
             });
 
             
-        }  // end of initMap()
-
-
-
-    
+        }  // end of initMap()   
     </script>
     <style>
-        .navbar{ height: 5%; background-color: lightgrey; margin: 0; }
-        h1{ font-size: 36px; text-align: center; }
-        #sidebar, #body{ padding: 1%; }
-        #map{ height: 250px; }
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
+        
+        *{
+            font-family: Poppins;
+        }
+        #map{ 
+            height: 350px;
+        }
+        html, body, div{
+            margin: 0px !important;
+            padding: 0px !important;
+            width: 100%;
+        }
+
+        .navbar{ 
+            height: 5%; 
+            margin: 0; 
+            width: 100% !important; 
+        }
+        h1{ 
+            font-size: 36px; 
+            text-align: center; 
+        }
+        #sidebar, #body{ 
+            padding: 1%; 
+        }
+        #ham{
+            font-size: 25px;
+        }
+
+        .green_t{
+            color:#217f24;
+        }
+        .green{
+            background-color: #217f24;
+        }
+
+        .light_green{
+            background-color: #f1f7b6;
+        }
+
+        .light_green_t{
+            color: #f1f7b6;
+        }
+
+        a{
+            color: #217f24; 
+        }
+        ul {
+            list-style-type: none;
+            margin-top: 5px;
+            margin-left: -10px;
+        }
+        #i{
+            color: #217f24;
+            margin-right: 5px;
+        }
+        #nav_bar{
+            border-bottom: 2px solid #217f24;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top">
+    <nav id='nav_bar' class="navbar navbar-default navbar-fixed-top light_green">
         <div class="container-fluid">
             <div class="col-lg-1 col-sm-1">
-                <button id="toggleSidebar" class="btn btn-primary">Nav</button>
+                <button id="toggleSidebar" class="btn light_green"><i id='ham'class="fas fa-bars green_t"></i></button>
+                
             </div>
             <div class="col-lg-4 col-sm-1"></div>
-            <div class="col-lg-2 col-sm-8"><h1 class="align-middle">Cookr</h1></div>
+            <div class="col-lg-2 col-sm-8"><h1 class="p-2 align-middle green_t">SmörgåsMaps</h1></div>
             <div class="col-lg-5 col-sm-2"></div>
         </div>
     </nav>
-    <div class="wrapper" id="wrapper">
+    <div class="wrapper " id="wrapper">
         <div class="row">
-            <div id="sidebar" class="col-sm-2">
-                <ul class="sidebar-nav">
-                    <li>Your Recipes</li>
-                    <li>Starred Recipes</li>
-                    <li>Your Cookbooks
-                        <ul>
-                            <li>(for loop)</li>
-                            <li>Book 1</li>
-                            <li>Book 2</li>
-                            <li>Book 3</li>
+            <div id="sidebar" class="col-sm-2 border-bottom border-right">
+                <ul class="sidebar-nav green_t"> 
+                    <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
+                    <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
+                        <ul class=''>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
                         </ul>
                     </li>
                     <hr>
-                    <li>Map Search</li>
-                    <li>Name Search</li>
-                    <li>User Search</li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
                     <hr>
-                    <li>Your Profile</li>
-                    <li>Log Out</li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
                 </ul>
             </div>
             <!-- end of sidebar -->
 
+            
+
             <!-- body -->
-            <div id="body" class="col-sm-10">
+            <div id="body" class="col-sm-10 pl-3">
                 <div class="container-fluid">
-                <form action="/recipes/create" method="POST" id="recipeForm">
+                <form class='form-group'action="/recipes/create" method="POST" id="recipeForm">
                     {% csrf_token %}
+                    <div class='row col-6 p-3' style='background-color: #cddc39; border-radius: 10px; border: 5px solid #4CAF50'>
                     <div class="row">
-                        <h2 class='text-center'>Display Name</h2>    
+                        <h2 class='mb-3 mt-3'>Add a new recipe:</h2>    
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <input type="text" name="name" placeholder="recipe name">
+                            <table>
+                            <tr>
+                            <td>Recipe Name: </td>
+                            <td><input class='form-control-sm mb-2' type="text" name="name" placeholder="recipe name"></td>
+                            </tr>
+                            <tr>
+                            <td>Image:</td> 
+                            <td><input class='form-control-sm' type="text" name="name" placeholder="image placeholder"></td>
+                            </tr>
+                            </table>
                         </div>
-                        
                     </div>
+                        <div class="col-4">
+                            
+                        </div>   
+                    </div>   
+                    
                     <div class="row">
-                        <div class='col-6 pl-4 pr-3' id="map">
-                            <h2>map</h2>
+                        <div class='row mt-4'>
+                        </div>
+                        <div class='col-5 pl-4 pr-3 border' id="map">
                         </div>
                         <div class='col-6 pl-3 pr-4' id="notes">
                             <textarea name="notes" placeholder="notes" rows=8></textarea>

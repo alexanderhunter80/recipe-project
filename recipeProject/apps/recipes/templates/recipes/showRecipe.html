@@ -13,7 +13,6 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
     </script>
     <script>
-
         // jQuery wrapper
         $( document ).ready(function() {
             var rowsInIngred = 1;
@@ -25,26 +24,6 @@
                 $("#body").toggleClass('col-sm-10 col-sm-12');
                 $(".alsoHide").toggleClass('hide');
             });
-
-            $("#addIngred").click(function(){
-                event.preventDefault();
-                rowsInIngred++;
-                var newRowString = "";
-                newRowString += '<div class="row"><input name="qty'+rowsInIngred+'" type="text" class="form-qty"><select name="units'+rowsInIngred+'" class="form-units"><option value="count">count</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="cup">cup</option><option value="pint">pint</option><option value="quart">quart</option><option value="gallon">gallon</option><option value="oz">oz</option><option value="fl oz">fl oz</option><option value="pound">pound</option><option value="g">g</option><option value="kg">kg</option><option value="mL">mL</option><option value="L">L</option><option value="dash">dash</option><option value="to taste">to taste</option></select><input name="ingred'+rowsInIngred+'" type="text" class="form-ingred"></div>';
-                $(newRowString).insertBefore($("#addIngredRow"));
-            });
-
-            $("#addDirect").click(function(){
-                event.preventDefault();
-                rowsInDirect++;
-                var newRowString = "";
-                newRowString += '<div class="row"><input name="direct'+rowsInDirect+'" type="text"></div>';
-                $(newRowString).insertBefore($("#addDirectRow"));
-            });
-            
-
-        });
-    
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
@@ -57,9 +36,21 @@
             width: 100%;
         }
 
-        .navbar{ height: 5%; margin: 0; width: 100% !important; }
-        h1{ font-size: 36px; text-align: center; }
-        #sidebar, #body{ padding: 1%; }
+        .navbar{ 
+            height: 5%; 
+            margin: 0; 
+            width: 100% !important; 
+        }
+        h1{ 
+            font-size: 36px; 
+            text-align: center; 
+        }
+        #sidebar, #body{ 
+            padding: 1%; 
+        }
+        #ham{
+            font-size: 25px;
+        }
 
         .orange-t{
             color:#fb8230;
@@ -90,14 +81,13 @@
             color: #bf3521;
             margin-right: 5px;
         }
-
     </style>
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top off_white">
         <div class="container-fluid">
             <div class="col-lg-1 col-sm-1">
-                <button id="toggleSidebar" class="btn off_white"><i class="fas fa-bars red-t"></i></button>
+                <button id="toggleSidebar" class="btn off_white"><i id='ham'class="fas fa-bars red-t"></i></button>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent23" aria-controls="navbarSupportedContent23"
         aria-expanded="false" aria-label="Toggle navigation"><div class="animated-icon3"><span></span><span></span><span></span><span></span></div></button>
             </div>
