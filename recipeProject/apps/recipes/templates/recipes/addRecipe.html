@@ -235,20 +235,17 @@
                 <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
                 <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
                 <ul class=''>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
+                    {% for i in cookbooks %}
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href="/recipes/books/{{cookbook.id}}">{cookbooks.name}</li>
+                    {% endfor %}
                 </ul>
-            
                 <hr>
                 <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
                 <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
                 <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
                 <hr>
                 <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
-                <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href="/logout"> Log Out</a></li>
             </ul>
         </div>
             <!-- end of sidebar -->
@@ -268,13 +265,35 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
+                                        {% for message in messages %}
+                                            {% if 'name' in message.tags %}
+                                                <li{% if message.tags %} class="{{ message.tags }} text-danger"{% endif %}>{{ message }}</li>
+                                            {% endif %}
+                                        {% endfor %}
                                         <input class='form-control mb-3'type="text" name="name" placeholder="add recipe name">
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="row">
+                                    <div class="col-6">
+                                    {% for message in messages %}
+                                        {% if 'map' in message.tags %}
+                                            <li{% if message.tags %} class="{{ message.tags }} text-danger"{% endif %}>{{ message }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </div>
+                                    <div class="col-6">
+                                    {% for message in messages %}
+                                            {% if 'notes' in message.tags %}
+                                                <li{% if message.tags %} class="{{ message.tags }} text-danger"{% endif %}>{{ message }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    </div>
                                     <div class='col-6 pl-4 pr-3 border' id="map" style="border-radius:7px;">
                                         <h2>map</h2>
                                     </div>
+                                        
                                     <div class='col-6 pl-3 pr-4' id="notes">
                                         <textarea class='form-control h-100 w-100'name="notes" placeholder="Leave a comment or description about your recipe..." style="border-radius:7px;"></textarea>
                                     </div>
@@ -283,6 +302,13 @@
                                         <div class="col-6 pt-3" id="ingredients">
                                             <div class="row">
                                                 <h3>Ingredients:</h3>
+                                            </div>
+                                            <div class="row">
+                                                {% for message in messages %}
+                                                    {% if 'name' in message.tags %}
+                                                    <li{% if message.tags %} class="{{ message.tags }} text-danger"{% endif %}>{{ message }}</li>
+                                                    {% endif %}
+                                                    {% endfor %}
                                             </div>
                                             <div class="row">
                                                 <input id='input1'name="qty1" type="text" class="form-qty">
@@ -314,6 +340,13 @@
                                         <div class="col-6 pl-3 pt-3" id="directions">
                                             <div class="row">
                                                 <h3>Directions:</h3>
+                                            </div>
+                                            <div class="row">
+                                                {% for message in messages %}
+                                                    {% if 'direct' in message.tags %}
+                                                    <li{% if message.tags %} class="{{ message.tags }} text-danger"{% endif %}>{{ message }}</li>
+                                                    {% endif %}
+                                                    {% endfor %}
                                             </div>
                                             <div class="row">
                                                 <input name="direct1" type="text">
