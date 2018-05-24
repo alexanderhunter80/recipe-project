@@ -32,8 +32,8 @@ class Recipe(models.Model):
 class Entry(models.Model):
     qty = models.FloatField()
     unit = models.CharField(max_length=100)
-    recipe_id = models.ForeignKey(Recipe, related_name="ingredient_entry", on_delete=models.CASCADE)
-    ingredient_id = models.ForeignKey(Ingredient, related_name="recipe_entry", on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, related_name="entries", on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, related_name="entries", on_delete=models.CASCADE)
 
 class Cookbook(models.Model):
     name = models.CharField(max_length=255)
@@ -48,3 +48,4 @@ class Location(models.Model):
     longitude = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE)
