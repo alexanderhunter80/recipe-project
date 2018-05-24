@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Map Search</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
@@ -19,6 +20,15 @@
         var allMapMarkers = [];
         var marker;
         var searchRadius;
+
+        $( document ).ready(function() {
+            // toggle sidebar
+            $("#toggleSidebar").click(function(){
+                $("#sidebar").toggleClass('col-sm-2 d-none');
+                $("#body").toggleClass('col-sm-10 col-sm-12');
+                $(".alsoHide").toggleClass('hide');
+            });
+        });
 
         // set up AJAX to include csrf token in all headers
         function csrfSafeMethod(method) {
@@ -173,10 +183,12 @@
             font-family: Poppins;
         }
 
+
         #map{ height: 500px; }
         .infoDiv{ width: 150px; overflow: hidden; }
         .infoHeader{ font-size: 12px; font-weight: 600; margin: 0 0 10px;}
         .notes{ font-size: 8px; font-style: italic; margin: 0; }
+
 
         html, body, div{
             margin: 0px !important;
@@ -221,50 +233,52 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top off_white">
+    <nav class="navbar navbar-default navbar-fixed-top off_white shadow">
         <div class="container-fluid">
             <div class="col-lg-1 col-sm-1">
-                <button id="toggleSidebar" class="btn off_white"><i class="fas fa-bars red-t"></i></button>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent23" aria-controls="navbarSupportedContent23"
-        aria-expanded="false" aria-label="Toggle navigation"><div class="animated-icon3"><span></span><span></span><span></span><span></span></div></button>
+                <button id="toggleSidebar" class="btn off_white"><i id='ham'class="fas fa-bars red-t"></i></button>
             </div>
             <div class="col-lg-4 col-sm-1"></div>
             <div class="col-lg-2 col-sm-8"><h1 class="p-2 align-middle orange-t">SmörgåsMaps</h1></div>
             <div class="col-lg-5 col-sm-2"></div>
         </div>
     </nav>
-    <div class="wrapper" id="wrapper">
+    <div class="wrapper " id="wrapper" >
         <div class="row">
-            <div id="sidebar" class="col-sm-2 border-bottom p-0">
-                <ul class="sidebar-nav red-t">
-                    <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
-                    <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
-                        <ul class=''>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
-                        </ul>
-                    </li>
-                    <hr>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
-                    <hr>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
+            <div id="sidebar" class="col-sm-2 border-bottom border-right shadow pt-4" style='background-color: white'>
+            <ul class="sidebar-nav green_t"> 
+                <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
+                <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
+                <ul class=''>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
                 </ul>
-            </div>
+            
+                <hr>
+                <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
+                <hr>
+                <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
+            </ul>
+        </div>
             <!-- end of sidebar -->
+            
+
+
+
             <!-- body -->
             <div id="body" class="col-sm-10">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-1"></div>
-                        <div class="col-10">
-                            <div id="map"></div>
+                        <div class="col-10 p-3 orange shadow rounded mt-5">
+                            <div id="map" class="shadow rounded"></div>
                         </div>
                         <div class="col-1"></div>
                     </div>

@@ -3,6 +3,7 @@ from .models import Recipe, RecipeManager, Ingredient, Entry, Cookbook, Location
 from apps.users.models import Profile 
 import json
 from django.http import JsonResponse
+from django.contrib import messages
 
 
 
@@ -33,47 +34,55 @@ def new(request):
 
 def create(request):
     print(request.POST)
-    allData = request.POST.dict()
-    ingredList = []
-    directList = []
-    for key in allData:
-        if key == 'csrfmiddlewaretoken':
-            continue
-        elif 'qty' in key:
-            ingredDict = {}
-            ingredDict['qty'] = allData[key]
-        elif 'units' in key:
-            ingredDict['units'] = allData[key]
-        elif 'ingred' in key:
-            ingredDict['ingred'] = allData[key]
-            ingredList.append(ingredDict)
-        elif 'direct' in key:
-            directList.append(allData[key])
-        print('ingredList',ingredList)  
-        print('directList',directList)
 
-    newRecipe = Recipe.objects.create(name=allData['name'],steps=directList,notes=allData['notes'],user_id=1) # change this fake ass user_id
-    print('creating new recipe')
-    print(newRecipe)
-    for e in ingredList:
-        if e['ingred'] in Ingredient.objects.all().values('name'):
-            print('found ingredient in table')
-            ingredLink = Ingredient.objects.get(name=e['ingred'])
-        else:
-            print('creating new ingredient')
-            ingredLink = Ingredient.objects.create(name=e['ingred'])
-        Entry.objects.create(qty=float(e['qty']),unit=e['units'],ingredient_id=ingredLink.id,recipe_id=newRecipe.id) 
-    newLocation = Location.objects.create(latitude=allData['lat'],longitude=allData['lng'],recipe=newRecipe)
+    result = Recipe.objects.recipe_validator(request.POST)
+    if result['status'] == True:
+        for key, value in result['errors'].items():
+            messages.error(request, value, extra_tags = key)
+        return redirect('/recipes/new')
+    else:
+        allData = request.POST.dict()
+        ingredList = []
+        directList = []
+        for key in allData:
+            if key == 'csrfmiddlewaretoken':
+                continue
+            elif 'qty' in key:
+                ingredDict = {}
+                ingredDict['qty'] = allData[key]
+            elif 'units' in key:
+                ingredDict['units'] = allData[key]
+            elif 'ingred' in key:
+                ingredDict['ingred'] = allData[key]
+                ingredList.append(ingredDict)
+            elif 'direct' in key:
+                directList.append(allData[key])
+            print('ingredList',ingredList)  
+            print('directList',directList)
 
-    # test printouts
-    print('new recipe')
-    print(newRecipe.name, newRecipe.notes, newRecipe.steps)
-    print('its ingredients')
-    print(newRecipe.entries.all().values())
-    for e in list(newRecipe.entries.all()):
-        print(e.ingredient.name)
-    print('its location')
-    print(newLocation.latitude, newLocation.longitude)
+        newRecipe = Recipe.objects.create(name=allData['name'],steps=directList,notes=allData['notes'],user_id=1) # change this fake ass user_id
+        print('creating new recipe')
+        print(newRecipe)
+        for e in ingredList:
+            if e['ingred'] in Ingredient.objects.all().values('name'):
+                print('found ingredient in table')
+                ingredLink = Ingredient.objects.get(name=e['ingred'])
+            else:
+                print('creating new ingredient')
+                ingredLink = Ingredient.objects.create(name=e['ingred'])
+            Entry.objects.create(qty=e['qty'],unit=e['units'],ingredient_id=ingredLink.id,recipe_id=newRecipe.id) 
+        newLocation = Location.objects.create(latitude=allData['lat'],longitude=allData['lng'],recipe=newRecipe)
+
+        # test printouts
+        print('new recipe')
+        print(newRecipe.name, newRecipe.notes, newRecipe.steps)
+        print('its ingredients')
+        print(newRecipe.entries.all().values())
+        for e in list(newRecipe.entries.all()):
+            print(e.ingredient.name)
+        print('its location')
+        print(newLocation.latitude, newLocation.longitude)
+
 
     return redirect('/recipes/new')
 

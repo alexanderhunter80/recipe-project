@@ -21,7 +21,6 @@
         // jQuery wrapper
         $( document ).ready(function() {
 
-
             // toggle sidebar
             $("#toggleSidebar").click(function(){
                 $("#sidebar").toggleClass('col-sm-2 d-none');
@@ -168,10 +167,41 @@
             margin-right: 5px;
         }
         #map{ height: 250px; }
+        #input1{
+            width: 20%;
+            height: 30px;
+            margin-bottom: 2px;
+            font-size: 10px;
+        }
+        #input2, .form-ingred{
+            width: 60%;
+            height: 30px;
+            margin-bottom: 2px;
+            font-size: 10px;
+        }
+
+        #ingredients select{
+            width: 60px;
+            height: 30px;
+            font-size: 10px;
+        }
+        .form-qty{
+            width: 20%;
+            margin-bottom: 2px;
+        }
+        #directions input{
+            width: 95%;
+            height: 30px;
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        
+
     </style>
 </head>
 <body>
-        <nav class="navbar navbar-default navbar-fixed-top off_white shadow">
+    <nav class="navbar navbar-default navbar-fixed-top off_white shadow">
         <div class="container-fluid">
             <div class="col-lg-1 col-sm-1">
                 <button id="toggleSidebar" class="btn off_white"><i id='ham'class="fas fa-bars red-t"></i></button>
@@ -181,30 +211,114 @@
             <div class="col-lg-5 col-sm-2"></div>
         </div>
     </nav>
-<div class="wrapper " id="wrapper">
+    <div class="wrapper " id="wrapper" >
         <div class="row">
-            <div id="sidebar" class="col-sm-2 border-bottom border-right shadow pt-4">
-                <ul class="sidebar-nav green_t"> 
-                    <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
-                    <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
-                        <ul class=''>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
-                        </ul>
-                    </li>
-                    <hr>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
-                    <hr>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
+            <div id="sidebar" class="col-sm-2 border-bottom border-right shadow pt-4" style='background-color: white'>
+            <ul class="sidebar-nav green_t"> 
+                <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
+                <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
+                <ul class=''>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
                 </ul>
+            
+                <hr>
+                <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
+                <hr>
+                <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
+            </ul>
+        </div>
+            <!-- end of sidebar -->
+
+            <!-- body -->
+        <div id="body" class="col-sm-10 p-5">
+            <div class='row'>
+                <div class='col-2'></div>
+            <div class="container-fluid col-8 p-3 orange-t" >   
+<!--                 <div class='orange p-4 shadow' style='border-radius: 25px;'>
+                    <div class='red p-4 shadow' style='border-radius: 25px;'> -->
+                        <div class='p-3 shadow border' style='border-radius: 25px; background-color: white; '>
+                            <form class="form-group" action="/recipes/create" method="POST" id="recipeForm">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <h2 class='display-5 ml-2'>Add a new recipe:</h2>    
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input class='form-control mb-3'type="text" name="name" placeholder="add recipe name">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class='col-6 pl-4 pr-3 border' id="map" style="border-radius:7px;">
+                                        <h2>map</h2>
+                                    </div>
+                                    <div class='col-6 pl-3 pr-4' id="notes">
+                                        <textarea class='form-control h-100 w-100'name="notes" placeholder="Leave a comment or description about your recipe..." style="border-radius:7px;"></textarea>
+                                    </div>
+                                </div>
+                                    <div class="row">
+                                        <div class="col-6 pt-3" id="ingredients">
+                                            <div class="row">
+                                                <h3>Ingredients:</h3>
+                                            </div>
+                                            <div class="row">
+                                                <input id='input1'name="qty1" type="text" class="form-qty">
+                                                    <select name="units1" class="form-units">
+                                                        <option value="count">count</option>
+                                                        <option value="tsp">tsp</option>
+                                                        <option value="tbsp">tbsp</option>
+                                                        <option value="cup">cup</option>
+                                                        <option value="pint">pint</option>
+                                                        <option value="quart">quart</option>
+                                                        <option value="gallon">gallon</option>
+                                                        <option value="oz">oz</option>
+                                                        <option value="fl oz">fl oz</option>
+                                                        <option value="pound">pound</option>
+                                                        <option value="g">g</option>
+                                                        <option value="kg">kg</option>
+                                                        <option value="mL">mL</option>
+                                                        <option value="L">L</option>
+                                                        <option value="dash">dash</option>
+                                                        <option value="to taste">to taste</option>
+                                                    </select>
+                                                <input id='input2' name="ingred1" type="text" class="form-ingred">
+                                            </div>
+                                            <div class="row" id="addIngredRow">
+                                                <button class="btn btn-outline-danger btn-sm mt-2 mb-2 shadow" id="addIngred">add row</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 pl-3 pt-3" id="directions">
+                                            <div class="row">
+                                                <h3>Directions:</h3>
+                                            </div>
+                                            <div class="row">
+                                                <input name="direct1" type="text">
+                                            </div>
+                                            <div class="row" id="addDirectRow">
+                                                <button class="btn btn-outline-danger btn-sm mt-2 mb-2 shadow" id="addDirect">add row</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top: 2%;">
+                                        <button class="btn btn-secondary shadow" id="fake-submit">post data</button>
+                                    </div>
+                                <div id="endForm"></div>
+                            </form>
+<!--                         </div>
+                    </div>  -->  
+                </div>
             </div>
-</div> 
+            <div class='col-2'></div>
+            </div>
+        </div>
+
+
 </body>
-</html> 
+</html>

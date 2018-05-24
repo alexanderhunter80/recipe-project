@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <title>{{ name }}</title>
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
@@ -226,18 +228,25 @@
             <div id="body" class="col-sm-10 border-left p-0">
                 <div class="container-fluid ">
                     <div class="row">
+
+            <!-- Name here -->
                         <div class='col-12'>
+
                             <h2 class='display-3 mt-3 text-center red-t'>{{ name }}</h2>
+
                         </div>    
                     </div>
+            <!-- Fill in fields -->
                                 <div class="row">
                                     <div class='col-1'></div>
                                     <div class='col-5 p-3'>
                                         <div class='row orange p-3 mb-3 rounded shadow'>
                                             <div class='bg-light rounded shadow p-2'>
+
                                                 {% for i in ingredients %}
                                                 <p>{{ i.qty }} {{ i.units }} {{ i.name }}</p>
                                                 {% endfor %}
+
                                             </div>
                                         </div> 
                                         <div class="row red p-3 rounded shadow">
@@ -249,6 +258,7 @@
                                     <div class='col-5 p-3'>
                                         <div class='row yellow p-3 rounded shadow'>
                                             <div class='bg-light rounded shadow p-2 mb-3'>
+
                                                 <!-- username goes here too -->
                                                 <p>{{ notes }}</p>
                                             </div>
@@ -256,6 +266,7 @@
                                                 {% for each in steps %}
                                                     <p>{{ each }}</p>
                                                 {% endfor %}
+
 
                                             </div>
                                         </div>

@@ -4,16 +4,29 @@ from apps.users.models import Profile
 
 class RecipeManager(models.Manager):
     def recipe_validator(self, postData):
-        result = {
-        'status' : False,
-        'errors' : []
-        }
-        # if len(result['errors']) < 1:
-        #     result['status'] = True
-        #     newRecipe = Recipe.objects.create(
-
-        #     newRecipe.save()
-        return result
+        errors = {}
+        if len(postData['name']) < 3:
+            errors['name'] = 'Field must be filled in'
+        if 'lat' not in postData:
+            errors['map'] = 'Location must be entered'
+        if len(postData['notes']) < 3:
+            errors['notes'] = 'Field must be filled in'
+        if len(postData['qty1']) < 0 or len(postData['ingred1']) < 0:
+            errors['ing'] = 'At least one ingredient must be entered'
+        if len(postData['direct1']) < 0:
+            errors['direct'] = 'Field must not be blank'
+        if len(errors) > 0:
+            result = {
+                'errors' : errors,
+                'status' : True
+            }
+            print('result', result)
+            return result
+        else:
+            result = {
+                'status': False
+            }
+            return result
 
 
 class Ingredient(models.Model):
@@ -27,7 +40,9 @@ class Recipe(models.Model):
     notes = models.TextField(max_length=1000)
     user = models.ForeignKey(User, related_name="recipes", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)\
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = RecipeManager()
+
 
 class Entry(models.Model):
     qty = models.FloatField()
