@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from .models import *
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
 
 def index(request):
     return render(request, "users/home_page.html")
@@ -32,3 +33,6 @@ def create_username(request):
     messages.add_message(request, messages.INFO, "Successfully logged in as " + user.username + ".")
     return redirect("/")
 
+def logout_view(request):
+    logout(request)
+    return redirect("/")

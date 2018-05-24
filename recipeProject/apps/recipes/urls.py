@@ -16,6 +16,7 @@ urlpatterns = [
     path('mapsearch', views.mapSearch), # GET only
     path('mapsearch/ajax', views.mapSearchAjax), # AJAX nonsense
     path('search', views.search), # if GET then show search page, if POST then do search stuff
-    path('search/results', views.searchResults) # GET only
+    path('search/results', views.searchResults), # GET only
     # path('ingsearch', views.ingSearch), # if GET then show search page, if POST then do search stuff
+    path('logout', views.logout_view),
 ]
