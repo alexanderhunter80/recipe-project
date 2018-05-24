@@ -4,139 +4,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Show Book</title>
+    <title>Map Search</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap&libraries=geometry">
     </script>
     <script>
-        var rowsInIngred = 1;
-        var rowsInDirect = 1;
-        var postLat;
-        var postLng;
+        var csrftoken = Cookies.get('csrftoken');
+        var markersFromDatabase;
+        var map;
+        var allMapMarkers = [];
+        var marker;
+        var searchRadius;
 
-        // jQuery wrapper
         $( document ).ready(function() {
-
-
             // toggle sidebar
             $("#toggleSidebar").click(function(){
                 $("#sidebar").toggleClass('col-sm-2 d-none');
                 $("#body").toggleClass('col-sm-10 col-sm-12');
                 $(".alsoHide").toggleClass('hide');
             });
-
-            $("#addIngred").click(function(){
-                event.preventDefault();
-                rowsInIngred++;
-                var newRowString = "";
-                newRowString += '<div class="row"><input name="qty'+rowsInIngred+'" type="text" class="form-qty"><select name="units'+rowsInIngred+'" class="form-units"><option value="count">count</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="cup">cup</option><option value="pint">pint</option><option value="quart">quart</option><option value="gallon">gallon</option><option value="oz">oz</option><option value="fl oz">fl oz</option><option value="pound">pound</option><option value="g">g</option><option value="kg">kg</option><option value="mL">mL</option><option value="L">L</option><option value="dash">dash</option><option value="to taste">to taste</option></select><input name="ingred'+rowsInIngred+'" type="text" class="form-ingred"></div>';
-                $(newRowString).insertBefore($("#addIngredRow"));
-            });
-
-            $("#addDirect").click(function(){
-                event.preventDefault();
-                rowsInDirect++;
-                var newRowString = "";
-                newRowString += '<div class="row"><input name="direct'+rowsInDirect+'" type="text"></div>';
-                $(newRowString).insertBefore($("#addDirectRow"));
-            });
-
-            // add latLng to POST
-            $("#fake-submit").click( function() {
-                event.preventDefault();
-                console.log(postLat+' '+postLng)
-                $('<input type="hidden" name="lat" value="'+postLat+'">').insertBefore('#endForm');
-                $('<input type="hidden" name="lng" value="'+postLng+'">').insertBefore('#endForm');
-                $('#recipeForm').submit();
-            });
-
         });
+
+        // set up AJAX to include csrf token in all headers
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        // create new marker, default to hidden
+        function placeMarker(location) {
+            console.log('creating map marker at '+location['lat']+' '+location['lng'])
+            var marker = new google.maps.Marker({
+                position: location, 
+                map: map,
+                visible: false // set to false
+            });
+            return marker;
+        }
+        
+        // populate list of map markers from database
+        function populateMap(){
+            console.log('AJAX call to populate map?');
+            
+            $.ajax({
+                url: '/recipes/mapsearch/ajax',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log('AJAX call successful');
+                    markersFromDatabase = data['markers'];
+                    console.log('map markers below');
+                    console.log(markersFromDatabase);
+                }
+            })
+        }
 
         // create map
         function initMap() {
             var spaceNeedle = {lat: 47.6205, lng: -122.3493};
-            var map = new google.maps.Map(document.getElementById('map'), {
+            map = new google.maps.Map(document.getElementById('map'), {
             zoom: 4,
             center: spaceNeedle,
             mapTypeId: google.maps.MapTypeId.ROADMAP
             });
 
+            populateMap();
+            // get all markers and add to map
+            google.maps.event.addListenerOnce(map, 'idle', function() {
+                for (var mkr in markersFromDatabase) {
+                    console.log(markersFromDatabase[mkr]);
+                    var newMarker = placeMarker({lat:markersFromDatabase[mkr]['latitude'],lng:markersFromDatabase[mkr]['longitude']})
+                    allMapMarkers.push(newMarker);
+                }
+                console.log('allMapMarkers');
+                console.log(allMapMarkers);
+            });
+            
+
             // attach click listener that creates a marker, erasing previous marker if necessary
-            var marker;
             google.maps.event.addListener(map, 'click', function(event) {
                 if (marker != null){
                     marker.setMap(null);
                 }
+                var centerIcon = {
+                    url: 'https://lh4.ggpht.com/Tr5sntMif9qOPrKV_UVl7K8A_V3xQDgA7Sw_qweLUFlg76d_vGFA7q1xIKZ6IcmeGqg',
+                    scaledSize: new google.maps.Size(65,65)
+                }
                 marker = new google.maps.Marker({
                     position: event.latLng,
                     map: map,
-                    draggable: true
+                    draggable: true,
+                    icon: centerIcon
                 })
+                if (searchRadius != null){
+                    searchRadius.setMap(null);
+                }
+                searchRadius = new google.maps.Circle({
+                    map: map,
+                    radius: 1000000,
+                    center: event.latLng,
+                    fillColor: '#777',
+                    fillOpacity: 0.1,
+                    strokeColor: '#AA0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    draggable: false,
+                    editable: false
+                    })
                 map.setCenter(event.latLng);
-                postLat = event.latLng.lat();
-                postLng = event.latLng.lng();
-                console.log('Lat '+postLat+', Lng '+postLng);
+                checkInRadius();
 
-                // recenter map when marker is dragged
+                // recenter map and radius when marker is dragged
                 google.maps.event.addListener(marker, 'dragend', function(event){
                     map.setCenter(event.latLng);
-                    postLat = event.latLng.lat();
-                    postLng = event.latLng.lng();
-                    console.log('Lat '+postLat+', Lng '+postLng);
+                    searchRadius.setCenter(event.latLng);
+                    checkInRadius();
                 })
-                
-                // open infoWindow on mouseover, close again when mouseout
-                var infoWindow;
-                google.maps.event.addListener(marker, 'mouseover', function(event){
-                    infoString = '<div id="content"><p>Latitude: '+event.latLng.lat()+'</p><p>Longitude: '+event.latLng.lng()+'</p></div>'
-                    console.log(infoString);
-                    infoWindow = new google.maps.InfoWindow({
-                        content: infoString
-                    })
-                    infoWindow.open(map, marker);
-                })
-                google.maps.event.addListener(marker, 'mouseout', function(event){
-                    infoWindow.close()
-                })
-            });
 
+                // check for markers in circle
+                function checkInRadius(){
+                    var circleBounds = searchRadius.getBounds();
+                        console.log(circleBounds);
+                        for(var m in allMapMarkers){
+                            var isInCircle = circleBounds.contains(allMapMarkers[m].getPosition());
+                            if (isInCircle){
+                                allMapMarkers[m].setVisible(true);
+                            }
+                            else {
+                                allMapMarkers[m].setVisible(false)
+                            };
+                        }
+                }
+                
+            });
             
         }  // end of initMap()
 
 
 
-    
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
         *{
             font-family: Poppins;
         }
+
+        #map{ height: 600px; }
+
         html, body, div{
             margin: 0px !important;
             padding: 0px !important;
             width: 100%;
         }
 
-        .navbar{ 
-            height: 5%; 
-            margin: 0; 
-            width: 100% !important; 
-        }
-        h1{ 
-            font-size: 36px; 
-            text-align: center; 
-        }
-        #sidebar, #body{ 
-            padding: 1%; 
-        }
-        #ham{
-            font-size: 25px;
-        }
+        .navbar{ height: 5%; margin: 0; width: 100% !important; }
+        h1{ font-size: 36px; text-align: center; }
+        #sidebar, #body{ padding: 1%; }
 
         .orange-t{
             color:#fb8230;
@@ -167,37 +202,6 @@
             color: #bf3521;
             margin-right: 5px;
         }
-        #map{ height: 250px; }
-        #input1{
-            width: 20%;
-            height: 30px;
-            margin-bottom: 2px;
-            font-size: 10px;
-        }
-        #input2, .form-ingred{
-            width: 60%;
-            height: 30px;
-            margin-bottom: 2px;
-            font-size: 10px;
-        }
-
-        #ingredients select{
-            width: 60px;
-            height: 30px;
-            font-size: 10px;
-        }
-        .form-qty{
-            width: 20%;
-            margin-bottom: 2px;
-        }
-        #directions input{
-            width: 95%;
-            height: 30px;
-            font-size: 10px;
-            margin-bottom: 2px;
-        }
-
-        
 
     </style>
 </head>
@@ -237,31 +241,25 @@
             </ul>
         </div>
             <!-- end of sidebar -->
+            
+
+
 
             <!-- body -->
-            <div id="body" class="col-sm-10 border-left p-0">
-                <div class="container-fluid ">
-                        <div class="row">
-                            <div class="col-2"></div>
-                            <div class="col-8 orange p-3 mb-3 rounded shadow mt-4">
-
-                                <div class='bg-light rounded shadow p-3'>
-                                    <h2>{Cookbook Title:}</h2>
-                                    <ul>
-                                        <li><a href="/books/{}">{Recipe Name}</a></li>
-                                        <ul>
-                                            <li>{Comment}</li>
-                                        </ul>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-2"></div>
+            <div id="body" class="col-sm-10">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-10 p-3 orange shadow rounded mt-5">
+                            <div id="map" class="shadow rounded"></div>
                         </div>
+                        <div class="col-1"></div>
                     </div>
+
+
                 </div>
             </div>
         </div>
-
-
+    </div>
 </body>
-</html> 
+</html>

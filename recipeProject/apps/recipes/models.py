@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from apps.users.models import Profile
 
 class RecipeManager(models.Manager):
     def recipe_validator(self, postData):
@@ -22,7 +23,7 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(max_length=255)
-    step = models.TextField()
+    steps = models.TextField()
     notes = models.TextField(max_length=1000)
     user = models.ForeignKey(User, related_name="recipes", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -31,8 +32,8 @@ class Recipe(models.Model):
 class Entry(models.Model):
     qty = models.FloatField()
     unit = models.CharField(max_length=100)
-    recipe_id = models.ForeignKey(Recipe, related_name="ingredient_entry", on_delete=models.CASCADE)
-    ingredient_id = models.ForeignKey(Ingredient, related_name="recipe_entry", on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, related_name="entries", on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, related_name="entries", on_delete=models.CASCADE)
 
 class Cookbook(models.Model):
     name = models.CharField(max_length=255)
@@ -47,3 +48,4 @@ class Location(models.Model):
     longitude = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE)

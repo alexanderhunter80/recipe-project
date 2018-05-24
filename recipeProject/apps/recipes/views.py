@@ -1,11 +1,33 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .models import Recipe, RecipeManager, Ingredient, Entry, Cookbook, Location#pylint: disable = E0402
+from .models import Recipe, RecipeManager, Ingredient, Entry, Cookbook, Location #pylint: disable = E0402
+from apps.users.models import Profile 
 import json
+from django.http import JsonResponse
+
+
+
+def populateBooks():
+
+    # navbar will need list of cookbooks, prototype code here
+    cookbooks = []
+    cookList = Cookbook.objects.all()
+    for c in cookList:
+        cookbooks.append(c.name)
+    print('list of cookbooks')
+    print(cookbooks)
+    return cookbooks
 
 
 
 def new(request):
-    return render(request, 'recipes/addRecipe.html')
+
+    cookbooks = populateBooks()
+
+    context = {
+        'cookbooks' : cookbooks
+    }
+
+    return render(request, 'recipes/addRecipe.html', context)
 
 
 
@@ -30,7 +52,7 @@ def create(request):
         print('ingredList',ingredList)  
         print('directList',directList)
 
-    newRecipe = Recipe.objects.create(name=allData['name'],step=directList,notes=allData['notes'])
+    newRecipe = Recipe.objects.create(name=allData['name'],steps=directList,notes=allData['notes'],user_id=1) # change this fake ass user_id
     print('creating new recipe')
     print(newRecipe)
     for e in ingredList:
@@ -40,6 +62,124 @@ def create(request):
         else:
             print('creating new ingredient')
             ingredLink = Ingredient.objects.create(name=e['ingred'])
-        Entry.objects.create(qty=e['qty'],unit=e['units'],ingredient_id=ingredLink,recipe_id=newRecipe)
+        Entry.objects.create(qty=e['qty'],unit=e['units'],ingredient_id=ingredLink,recipe_id=newRecipe) 
+    newLocation = Location.objects.create(latitude=allData['lat'],longitude=allData['lng'],recipe=newRecipe)
+
+    # test printouts
+    print('new recipe')
+    print(newRecipe.name, newRecipe.notes, newRecipe.steps)
+    print('its ingredients')
+    print(newRecipe.entries.all().values())
+    for e in list(newRecipe.entries.all()):
+        print(e.ingredient.name)
+    print('its location')
+    print(newLocation.latitude, newLocation.longitude)
 
     return redirect('/recipes/new')
+
+
+
+def show(request, n):
+
+    if request.method == 'POST':    
+        ##############################################
+        # untested
+        ##############################################
+
+        r = Recipe.objects.get(id=n)
+        ingList = []
+        for e in list(Recipe.entries.all()):
+            entry = {}
+            entry['qty'] = e['qty']
+            entry['units'] = e['units']
+            entry['name'] = e.ingredient.name
+            ingList.append(entry)
+        print('list of ingredient rows')
+        print(ingList)
+
+        context = {
+            'id' : r.id,
+            'name' : r.name,
+            'notes' : r.notes,
+            'steps' : r.steps,
+            # 'user' : user displayname,
+            'ingredients' : ingList
+        }
+
+        return redirect('/recipes/%s' % r.id)
+
+    elif request.method == 'DELETE':
+        return HttpResponse("501 Not Implemented:  deleteRecipe")
+
+    elif request.method == 'GET':
+        cookbooks = populateBooks()
+        context = { 'cookbooks' : cookbooks }
+        return render(request, 'recipes/showRecipe.html', context)
+
+def edit(request, n):
+    pass
+    return HttpResponse("501 Not Implemented: edit")
+
+def confirmDelete(request, n):
+    pass
+    return HttpResponse("501 Not Implemented: confirmDelete")
+
+def newBook(request):
+    pass
+    return HttpResponse("501 Not Implemented: newBook")
+
+def createBook(request):
+    pass
+    return HttpResponse("501 Not Implemented: createBook")
+
+def showBook(reques, n):
+    pass
+    return HttpResponse("501 Not Implemented: showBook")
+
+def editBook(request, n):
+    pass
+    return HttpResponse("501 Not Implemented: editBook")
+
+def confirmDeleteBook(request, n):
+    pass
+    return HttpResponse("501 Not Implemented: confirmDeleteBook")
+
+def mapSearch(request):
+
+    cookbooks = populateBooks()
+    context = { 'cookbooks' : cookbooks}
+
+    return render(request, 'recipes/mapSearch.html', context)
+
+def mapSearchAjax(request):
+
+    ##########################################################################################################
+    # UNTESTED 
+    ##########################################################################################################
+
+    allRecipes = Recipe.objects.all()
+    mapData = []
+    for r in allRecipes:
+        entry = {}
+        entry['id'] = r.id
+        entry['name'] = r.name
+        entry['notes'] = r.notes
+        # entry['user'] = display name somehow
+        entry['lat'] = r.location.latitude
+        entry['lng'] = r.location.longitude
+        mapData.append(entry)
+    print(mapData)
+    dataDict = {'markers':mapData}
+    return JsonResponse(dataDict)
+
+def search(request):
+    pass
+    return HttpResponse("501 Not Implemented: search")
+
+def searchResults(request):
+    pass
+    return HttpResponse("501 Not Implemented: searchResults")
+
+# def ingSearch(request):
+    # pass
+    # return HttpResponse("501 Not Implemented")
