@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Add Book</title>
+    <title>Edit Book</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
@@ -171,40 +171,34 @@
     </style>
 </head>
 <body>
-        <nav class="navbar navbar-default navbar-fixed-top off_white shadow">
+    <nav class="navbar navbar-default navbar-fixed-top off_white shadow">
         <div class="container-fluid">
             <div class="col-lg-1 col-sm-1">
-                <button id="toggleSidebar" class="btn off_white"><i id='ham'class="fas fa-bars red-t"></i></button>
             </div>
             <div class="col-lg-4 col-sm-1"></div>
             <div class="col-lg-2 col-sm-8"><h1 class="p-2 align-middle orange-t">SmörgåsMaps</h1></div>
             <div class="col-lg-5 col-sm-2"></div>
         </div>
     </nav>
-<div class="wrapper " id="wrapper">
+    <div class='col-12'>
         <div class="row">
-            <div id="sidebar" class="col-sm-2 border-bottom border-right shadow pt-4">
-                <ul class="sidebar-nav green_t"> 
-                    <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
-                    <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
-                        <ul class=''>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
-                        </ul>
-                    </li>
-                    <hr>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
-                    <hr>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
-                </ul>
-            </div>
-</div> 
+
+                <div class="col-4"></div>
+                <div class="col-4 vertical-align p-3 mt-4 orange shadow rounded">
+                    <div class="row">
+                        <div class='bg-light rounded shadow p-4'>
+                            <p>Thank you for being apart of SmörgåsMaps!</p>
+                            <form  class='form-group'action='/username' method="POST">
+                                Create Username:<input type='text' name='username' class='form-control'>
+                                <input type='submit' class='btn btn-primary float-right mt-3'>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4"></div>
+           
+        </div>
+    </div>
+
 </body>
 </html> 
