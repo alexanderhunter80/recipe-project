@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title></title>
+    <title>Add Recipe</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
@@ -13,10 +13,14 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
     </script>
     <script>
+        var rowsInIngred = 1;
+        var rowsInDirect = 1;
+        var postLat;
+        var postLng;
+
         // jQuery wrapper
         $( document ).ready(function() {
-            var rowsInIngred = 1;
-            var rowsInDirect = 1;
+
 
             // toggle sidebar
             $("#toggleSidebar").click(function(){
@@ -24,6 +28,88 @@
                 $("#body").toggleClass('col-sm-10 col-sm-12');
                 $(".alsoHide").toggleClass('hide');
             });
+
+            $("#addIngred").click(function(){
+                event.preventDefault();
+                rowsInIngred++;
+                var newRowString = "";
+                newRowString += '<div class="row"><input name="qty'+rowsInIngred+'" type="text" class="form-qty"><select name="units'+rowsInIngred+'" class="form-units"><option value="count">count</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="cup">cup</option><option value="pint">pint</option><option value="quart">quart</option><option value="gallon">gallon</option><option value="oz">oz</option><option value="fl oz">fl oz</option><option value="pound">pound</option><option value="g">g</option><option value="kg">kg</option><option value="mL">mL</option><option value="L">L</option><option value="dash">dash</option><option value="to taste">to taste</option></select><input name="ingred'+rowsInIngred+'" type="text" class="form-ingred"></div>';
+                $(newRowString).insertBefore($("#addIngredRow"));
+            });
+
+            $("#addDirect").click(function(){
+                event.preventDefault();
+                rowsInDirect++;
+                var newRowString = "";
+                newRowString += '<div class="row"><input name="direct'+rowsInDirect+'" type="text"></div>';
+                $(newRowString).insertBefore($("#addDirectRow"));
+            });
+
+            // add latLng to POST
+            $("#fake-submit").click( function() {
+                event.preventDefault();
+                console.log(postLat+' '+postLng)
+                $('<input type="hidden" name="lat" value="'+postLat+'">').insertBefore('#endForm');
+                $('<input type="hidden" name="lng" value="'+postLng+'">').insertBefore('#endForm');
+                $('#recipeForm').submit();
+            });
+
+        });
+
+        // create map
+        function initMap() {
+            var spaceNeedle = {lat: 47.6205, lng: -122.3493};
+            var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: spaceNeedle,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            // attach click listener that creates a marker, erasing previous marker if necessary
+            var marker;
+            google.maps.event.addListener(map, 'click', function(event) {
+                if (marker != null){
+                    marker.setMap(null);
+                }
+                marker = new google.maps.Marker({
+                    position: event.latLng,
+                    map: map,
+                    draggable: true
+                })
+                map.setCenter(event.latLng);
+                postLat = event.latLng.lat();
+                postLng = event.latLng.lng();
+                console.log('Lat '+postLat+', Lng '+postLng);
+
+                // recenter map when marker is dragged
+                google.maps.event.addListener(marker, 'dragend', function(event){
+                    map.setCenter(event.latLng);
+                    postLat = event.latLng.lat();
+                    postLng = event.latLng.lng();
+                    console.log('Lat '+postLat+', Lng '+postLng);
+                })
+                
+                // open infoWindow on mouseover, close again when mouseout
+                var infoWindow;
+                google.maps.event.addListener(marker, 'mouseover', function(event){
+                    infoString = '<div id="content"><p>Latitude: '+event.latLng.lat()+'</p><p>Longitude: '+event.latLng.lng()+'</p></div>'
+                    console.log(infoString);
+                    infoWindow = new google.maps.InfoWindow({
+                        content: infoString
+                    })
+                    infoWindow.open(map, marker);
+                })
+                google.maps.event.addListener(marker, 'mouseout', function(event){
+                    infoWindow.close()
+                })
+            });
+
+            
+        }  // end of initMap()
+
+
+
+    
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
@@ -81,6 +167,38 @@
             color: #bf3521;
             margin-right: 5px;
         }
+        #map{ height: 250px; }
+        #input1{
+            width: 20%;
+            height: 30px;
+            margin-bottom: 2px;
+            font-size: 10px;
+        }
+        #input2, .form-ingred{
+            width: 60%;
+            height: 30px;
+            margin-bottom: 2px;
+            font-size: 10px;
+        }
+
+        #ingredients select{
+            width: 60px;
+            height: 30px;
+            font-size: 10px;
+        }
+        .form-qty{
+            width: 20%;
+            margin-bottom: 2px;
+        }
+        #directions input{
+            width: 95%;
+            height: 30px;
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        
+
     </style>
 </head>
 <body>
@@ -94,30 +212,30 @@
             <div class="col-lg-5 col-sm-2"></div>
         </div>
     </nav>
-<div class="wrapper " id="wrapper">
+    <div class="wrapper " id="wrapper" >
         <div class="row">
-            <div id="sidebar" class="col-sm-2 border-bottom border-right shadow pt-4">
-                <ul class="sidebar-nav green_t"> 
-                    <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
-                    <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
-                        <ul class=''>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
-                        </ul>
-                    </li>
-                    <hr>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
-                    <hr>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
+            <div id="sidebar" class="col-sm-2 border-bottom border-right shadow pt-4" style='background-color: white'>
+            <ul class="sidebar-nav green_t"> 
+                <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
+                <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
+                <ul class=''>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
                 </ul>
-            </div>
+            
+                <hr>
+                <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
+                <hr>
+                <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
+            </ul>
+        </div>
             <!-- end of sidebar -->
 
             <!-- body -->
@@ -126,26 +244,35 @@
                 <div class="container-fluid ">
                     <div class="row">
                         <div class='col-12'>
-                            <h2 class='display-3 text-center red-t'>Display Name</h2>
-                            <p class=' text-center red-t'>placeholder:img</p>
+                            <h2 class='display-3 mt-3 text-center red-t'>Display Name</h2>
                         </div>    
                     </div>
-                    <div class="row">
-                        <div class='col-6 p-3 orange'>
-                            <h2 class=''>map</h2>
-                        </div>
-                        <div class='col-6 p-3 yellow'>
-                            <h2>Comment</h2>
-                        </div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-6 p-3 red'>
-                            <h2>Ing.</h2>
-                        </div>
-                        <div class='col-6 p-3 off_white'>
-                            <h2>Directions</h2>
+                                <div class="row">
+                                    <div class='col-1'></div>
+                                    <div class='col-5 p-3'>
+                                        <div class='row orange p-3 mb-3 rounded shadow'>
+                                            <div class='bg-light rounded shadow p-2'>
+                                                <p>ALL INGREDIANTS</p>
+                                            </div>
+                                        </div> 
+                                        <div class="row red p-3 rounded shadow">
+                                            <div class='bg-light rounded shadow p-2' id='map'></div>
+                                        </div>
+                                        
+                                    </div>
 
-                        </div>
+                                    <div class='col-5 p-3'>
+                                        <div class='row yellow p-3 rounded shadow'>
+                                            <div class='bg-light rounded shadow p-2 mb-3'>
+                                                <h2>Comment & written by</h2>
+                                            </div>
+                                            <div class='bg-light rounded shadow p-2'>
+                                                <h2>Directions</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1"></div>
+                                </div>
                     </div>
                 </div>
             </div>

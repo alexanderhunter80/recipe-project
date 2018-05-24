@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Add Recipe</title>
+    <title>Show Book</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
@@ -168,6 +168,37 @@
             margin-right: 5px;
         }
         #map{ height: 250px; }
+        #input1{
+            width: 20%;
+            height: 30px;
+            margin-bottom: 2px;
+            font-size: 10px;
+        }
+        #input2, .form-ingred{
+            width: 60%;
+            height: 30px;
+            margin-bottom: 2px;
+            font-size: 10px;
+        }
+
+        #ingredients select{
+            width: 60px;
+            height: 30px;
+            font-size: 10px;
+        }
+        .form-qty{
+            width: 20%;
+            margin-bottom: 2px;
+        }
+        #directions input{
+            width: 95%;
+            height: 30px;
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        
+
     </style>
 </head>
 <body>
@@ -181,30 +212,76 @@
             <div class="col-lg-5 col-sm-2"></div>
         </div>
     </nav>
-<div class="wrapper " id="wrapper">
+    <div class="wrapper " id="wrapper" >
         <div class="row">
-            <div id="sidebar" class="col-sm-2 border-bottom border-right shadow pt-4">
-                <ul class="sidebar-nav green_t"> 
-                    <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
-                    <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
-                        <ul class=''>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
-                        </ul>
-                    </li>
-                    <hr>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
-                    <hr>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
+            <div id="sidebar" class="col-sm-2 border-bottom border-right shadow pt-4" style='background-color: white'>
+            <ul class="sidebar-nav green_t"> 
+                <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
+                <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
+                <ul class=''>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
                 </ul>
+            
+                <hr>
+                <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
+                <hr>
+                <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
+            </ul>
+        </div>
+            <!-- end of sidebar -->
+
+            <!-- body -->
+
+            <div id="body" class="col-sm-10 border-left p-0">
+                <div class="container-fluid ">
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8 orange p-3 mb-3 rounded shadow mt-4">
+                                <div class='bg-light rounded shadow p-2'>
+                                    <h2>Cookbook Title:</h2>
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                                <div class="row">
+                                    <div class='col-1'></div>
+                                    <div class='col-5 p-3'>
+                                        <div class='row orange p-3 mb-3 rounded shadow'>
+                                            <div class='bg-light rounded shadow p-2'>
+                                                <p>ALL INGREDIANTS</p>
+                                            </div>
+                                        </div> 
+                                        <div class="row red p-3 rounded shadow">
+                                            <div class='bg-light rounded shadow p-2' id='map'></div>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class='col-5 p-3'>
+                                        <div class='row yellow p-3 rounded shadow'>
+                                            <div class='bg-light rounded shadow p-2 mb-3'>
+                                                <h2>Comment & written by</h2>
+                                            </div>
+                                            <div class='bg-light rounded shadow p-2'>
+                                                <h2>Directions</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1"></div>
+                                </div>
+                    </div>
+                </div>
             </div>
-</div> 
+        </div>
+
+
 </body>
 </html> 
