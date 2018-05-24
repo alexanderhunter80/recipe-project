@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class RecipeManager(models.Manager):
     def recipe_validator(self, postData):
@@ -13,6 +14,7 @@ class RecipeManager(models.Manager):
         #     newRecipe.save()
         return result
 
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -22,6 +24,7 @@ class Recipe(models.Model):
     name = models.CharField(max_length=255)
     step = models.TextField()
     notes = models.TextField(max_length=1000)
+    user = models.ForeignKey(User, related_name="recipes", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -35,6 +38,7 @@ class Cookbook(models.Model):
     name = models.CharField(max_length=255)
     notes = models.TextField(max_length=1000)
     recipes = models.ManyToManyField(Recipe, related_name="cookbooks")
+    user = models.ForeignKey(User, related_name="cookbooks", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
