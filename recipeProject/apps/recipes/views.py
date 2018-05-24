@@ -104,9 +104,6 @@ def show(request, n):
         stepsList = stepsList.split(',')
         print(stepsList)
 
-
-
-
         cookbooks = populateBooks()
 
         context = {
@@ -128,6 +125,21 @@ def show(request, n):
 
     elif request.method == 'POST':
         return HttpResponse()
+
+
+
+def showAjax(request, n):
+
+    r = Recipe.objects.get(id=n)
+
+    dataDict = {
+        'lat': r.location.latitude,
+        'lng': r.location.longitude
+    }
+
+    return JsonResponse(dataDict)
+
+
 
 def edit(request, n):
     pass
