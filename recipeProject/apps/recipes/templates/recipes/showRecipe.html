@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script defer
@@ -23,64 +24,120 @@
                 $(".alsoHide").toggleClass('hide');
 
             });
+            
 
         });
     
     </script>
     <style>
-        .navbar{ height: 5%; background-color: lightgrey; margin: 0; }
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
+        *{
+            font-family: Poppins;
+        }
+        html, body, div{
+            margin: 0px !important;
+            padding: 0px !important;
+            width: 100%;
+        }
+
+        .navbar{ height: 5%; margin: 0; width: 100% !important; }
         h1{ font-size: 36px; text-align: center; }
         #sidebar, #body{ padding: 1%; }
+
+        .orange-t{
+            color:#fb8230;
+        }
+        .red-t{
+            color: #bf3521;
+        }
+        .orange{
+            background-color: #fb8230;
+        }
+        .yellow{
+            background-color: #fcae00;
+        }
+        .red{
+            background-color: #bf3521;
+        }
+        .off_white{
+            background-color: #fff2e2;
+        }
+        a{
+            color: #bf3521; 
+        }
+        ul {
+            list-style-type: none;
+            margin-top: 5px;
+        }
+        #i{
+            color: #bf3521;
+            margin-right: 5px;
+        }
+
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top off_white">
         <div class="container-fluid">
             <div class="col-lg-1 col-sm-1">
-                <button id="toggleSidebar" class="btn btn-primary">Nav</button>
+                <button id="toggleSidebar" class="btn off_white"><i class="fas fa-bars red-t"></i></button>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent23" aria-controls="navbarSupportedContent23"
+        aria-expanded="false" aria-label="Toggle navigation"><div class="animated-icon3"><span></span><span></span><span></span><span></span></div></button>
             </div>
             <div class="col-lg-4 col-sm-1"></div>
-            <div class="col-lg-2 col-sm-8"><h1 class="align-middle">Cookr</h1></div>
+            <div class="col-lg-2 col-sm-8"><h1 class="p-2 align-middle orange-t">SmörgåsMaps</h1></div>
             <div class="col-lg-5 col-sm-2"></div>
         </div>
     </nav>
     <div class="wrapper" id="wrapper">
         <div class="row">
-            <div id="sidebar" class="col-sm-2">
-                <ul class="sidebar-nav">
-                    <li>Your Recipes</li>
-                    <li>Starred Recipes</li>
-                    <li>Your Cookbooks
-                        <ul>
-                            <li>(for loop)</li>
-                            <li>Book 1</li>
-                            <li>Book 2</li>
-                            <li>Book 3</li>
+            <div id="sidebar" class="col-sm-2 border-bottom p-0">
+                <ul class="sidebar-nav red-t">
+                    <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
+                    <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
+                        <ul class=''>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
                         </ul>
                     </li>
                     <hr>
-                    <li>Map Search</li>
-                    <li>Name Search</li>
-                    <li>User Search</li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
                     <hr>
-                    <li>Your Profile</li>
-                    <li>Log Out</li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
                 </ul>
             </div>
             <!-- end of sidebar -->
 
             <!-- body -->
-            <div id="body" class="col-sm-10">
-                <div class="container-fluid">
+            <div id="body" class="col-sm-10 border-left p-0">
+                <div class="container-fluid ">
                     <div class="row">
-                        <h2 class='text-center'>Display Name</h2>    
+                        <div class='col-12'>
+                            <h2 class='display-3 text-center red-t'>Display Name</h2>
+                            <p class=' text-center red-t'>placeholder:img</p>
+                        </div>    
                     </div>
                     <div class="row">
-                        <div class='col-6 pl-4 pr-3 bg-danger'>
-                            <h2>map</h2>
+                        <div class='col-6 p-3 orange'>
+                            <h2 class=''>map</h2>
                         </div>
-                        <div class='col-6 pl-3 pr-4 bg-secondary'>
-                            <h2>directions</h2>
+                        <div class='col-6 p-3 yellow'>
+                            <h2>Comment</h2>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-6 p-3 red'>
+                            <h2>Ing.</h2>
+                        </div>
+                        <div class='col-6 p-3 off_white'>
+                            <h2>Directions</h2>
                         </div>
                     </div>
 
