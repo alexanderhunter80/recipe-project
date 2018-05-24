@@ -155,8 +155,9 @@ def edit(request, n):
     return HttpResponse("501 Not Implemented: edit")
 
 def confirmDelete(request, n):
-    pass
-    return HttpResponse("501 Not Implemented: confirmDelete")
+    recipe = Recipe.objects.get(id=n)
+    recipe.delete()
+    return redirect("/recipes")
 
 def newBook(request):
     pass
@@ -175,8 +176,9 @@ def editBook(request, n):
     return HttpResponse("501 Not Implemented: editBook")
 
 def confirmDeleteBook(request, n):
-    pass
-    return HttpResponse("501 Not Implemented: confirmDeleteBook")
+    cookbook = Cookbook.objects.get(id=n)
+    cookbook.delete()
+    return redirect("/recipes")
 
 def mapSearch(request):
 
