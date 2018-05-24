@@ -88,8 +88,11 @@ def create(request):
         print('its location')
         print(newLocation.latitude, newLocation.longitude)
 
-
     return redirect('/recipes/new')
+    
+
+
+
 
 
 
@@ -133,12 +136,62 @@ def show(request, n):
 
         return render(request, 'recipes/showRecipe.html', context)
 
-
     elif request.method == 'DELETE':
         return HttpResponse("501 Not Implemented:  deleteRecipe")
 
     elif request.method == 'POST':
-        return HttpResponse()
+
+        r = Recipe.objects.get(id=n)
+
+        result = Recipe.objects.recipe_validator(request.POST)
+        if result['status'] == True:
+            for key, value in result['errors'].items():
+                messages.error(request, value, extra_tags = key)
+            return redirect('/recipes/new')
+        else:
+            allData = request.POST.dict()
+            ingredList = []
+            directList = []
+            for key in allData:
+                if key == 'csrfmiddlewaretoken':
+                    continue
+                elif 'qty' in key:
+                    ingredDict = {}
+                    ingredDict['qty'] = allData[key]
+                elif 'units' in key:
+                    ingredDict['units'] = allData[key]
+                elif 'ingred' in key:
+                    ingredDict['ingred'] = allData[key]
+                    ingredList.append(ingredDict)
+                elif 'direct' in key:
+                    directList.append(allData[key])
+                print('ingredList',ingredList)  
+                print('directList',directList)
+
+            #r.update(name=allData['name'],steps=directList,notes=allData['notes'])
+            r.name=allData['name']
+            r.steps=directList
+            r.notes=allData['notes']
+            r.save()
+
+            deleteEntries = r.entries.all()
+            for each in deleteEntries:
+                each.delete()
+
+            for e in ingredList:
+                if e['ingred'] in Ingredient.objects.all().values('name'):
+                    print('found ingredient in table')
+                    ingredLink = Ingredient.objects.get(name=e['ingred'])
+                else:
+                    print('creating new ingredient')
+                    ingredLink = Ingredient.objects.create(name=e['ingred'])
+                Entry.objects.create(qty=e['qty'],unit=e['units'],ingredient_id=ingredLink.id,recipe_id=r.id) # wtf do i do with this
+            r.location.latitude=allData['lat']
+            r.location.longitude=allData['lng']
+            r.location.save()
+
+            return redirect('/recipes/%s' % r.id)
+
 
 
 
@@ -167,9 +220,10 @@ def edit(request, n):
         entry['units'] = e.unit
         entry['name'] = e.ingredient.name
         ingList.append(entry)
-    print(r.steps)
     print('list of ingredient rows')
     print(ingList)
+    print('notes')
+    print(r.notes)
 
     stepsList = r.steps.replace('[','')
     stepsList = stepsList.replace(']','')
