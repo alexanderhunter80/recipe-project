@@ -6,12 +6,22 @@ from django.http import JsonResponse
 
 
 
-def new(request):
+def populateBooks():
 
     # navbar will need list of cookbooks, prototype code here
-    cookbooks = list(Cookbook.objects.all().name)
+    cookbooks = []
+    cookList = Cookbook.objects.all()
+    for c in cookList:
+        cookbooks.append(c.name)
     print('list of cookbooks')
     print(cookbooks)
+    return cookbooks
+
+
+
+def new(request):
+
+    cookbooks = populateBooks()
 
     context = {
         'cookbooks' : cookbooks
@@ -88,6 +98,7 @@ def show(request, n):
         print(ingList)
 
         context = {
+            'id' : r.id,
             'name' : r.name,
             'notes' : r.notes,
             'steps' : r.steps,
@@ -95,10 +106,15 @@ def show(request, n):
             'ingredients' : ingList
         }
 
-        return render(request, 'recipes/showRecipe.html', context)
+        return redirect('/recipes/%s' % r.id)
 
     elif request.method == 'DELETE':
         return HttpResponse("501 Not Implemented:  deleteRecipe")
+
+    elif request.method == 'GET':
+        cookbooks = populateBooks()
+        context = { 'cookbooks' : cookbooks }
+        return render(request, 'recipes/showRecipe.html', context)
 
 def edit(request, n):
     pass
@@ -129,8 +145,11 @@ def confirmDeleteBook(request, n):
     return HttpResponse("501 Not Implemented: confirmDeleteBook")
 
 def mapSearch(request):
-    pass
-    return render(request, 'recipes/mapSearch.html')
+
+    cookbooks = populateBooks()
+    context = { 'cookbooks' : cookbooks}
+
+    return render(request, 'recipes/mapSearch.html', context)
 
 def mapSearchAjax(request):
 
@@ -150,7 +169,7 @@ def mapSearchAjax(request):
         entry['lng'] = r.location.longitude
         mapData.append(entry)
     print(mapData)
-    dataDict = {'mapData':mapData}
+    dataDict = {'markers':mapData}
     return JsonResponse(dataDict)
 
 def search(request):
