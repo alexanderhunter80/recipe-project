@@ -7,6 +7,7 @@ urlpatterns = [
     path('<int:n>', views.show), # if GET then show page, if DELETE then delete entry, if POST then update data
     path('<int:n>/edit', views.edit), # if GET then show edit page
     path('<int:n>/delete', views.confirmDelete), # GET only
+    path('<int:n>/ajax', views.showAjax), # fetch location of single recipe
     path('books/new', views.newBook), # GET only
     path('books/create', views.createBook), # POST only
     path('books/<int:n>', views.showBook), # if GET then show page, if DELETE then delete entry, if POST then update data

@@ -187,8 +187,11 @@
                 <div class="col-4 vertical-align p-3 mt-4 orange shadow rounded">
                     <div class="row">
                         <div class='bg-light rounded shadow p-4'>
-                            <p>Thank you for being apart of SmörgåsMaps!</p>
+
+                            <p>Thank you for being a part of SmörgåsMaps!</p>
                             <form  class='form-group'action='/username' method="POST">
+                                {% csrf_token %}
+
                                 Create Username:<input type='text' name='username' class='form-control'>
                                 <input type='submit' class='btn btn-primary float-right mt-3'>
                             </form>

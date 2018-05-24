@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Show Recipe</title>
+
+    <title>{{ name }}</title>
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
@@ -13,10 +15,8 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
     </script>
     <script>
-        var rowsInIngred = 1;
-        var rowsInDirect = 1;
-        var postLat;
-        var postLng;
+        var thisLat;
+        var thisLng;
 
         // jQuery wrapper
         $( document ).ready(function() {
@@ -56,52 +56,37 @@
 
         });
 
+        // AJAX call to get recipe location
+        function getLocation() {
+            var id = {{recipeObject.id}}
+            $.ajax({
+                url: '/recipes/'+id+'/ajax',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log('AJAX call successful');
+                    thisLat = data['lat'];
+                    thisLng = data['lng'];
+                    console.log('marker location');
+                    console.log(thisLat, thisLng);
+                }
+            })
+        }
+
         // create map
         function initMap() {
-            var spaceNeedle = {lat: 47.6205, lng: -122.3493};
+            getLocation();
             var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 4,
-            center: spaceNeedle,
             mapTypeId: google.maps.MapTypeId.ROADMAP
             });
 
-            // attach click listener that creates a marker, erasing previous marker if necessary
-            var marker;
-            google.maps.event.addListener(map, 'click', function(event) {
-                if (marker != null){
-                    marker.setMap(null);
-                }
-                marker = new google.maps.Marker({
-                    position: event.latLng,
-                    map: map,
-                    draggable: true
-                })
-                map.setCenter(event.latLng);
-                postLat = event.latLng.lat();
-                postLng = event.latLng.lng();
-                console.log('Lat '+postLat+', Lng '+postLng);
-
-                // recenter map when marker is dragged
-                google.maps.event.addListener(marker, 'dragend', function(event){
-                    map.setCenter(event.latLng);
-                    postLat = event.latLng.lat();
-                    postLng = event.latLng.lng();
-                    console.log('Lat '+postLat+', Lng '+postLng);
-                })
-                
-                // open infoWindow on mouseover, close again when mouseout
-                var infoWindow;
-                google.maps.event.addListener(marker, 'mouseover', function(event){
-                    infoString = '<div id="content"><p>Latitude: '+event.latLng.lat()+'</p><p>Longitude: '+event.latLng.lng()+'</p></div>'
-                    console.log(infoString);
-                    infoWindow = new google.maps.InfoWindow({
-                        content: infoString
-                    })
-                    infoWindow.open(map, marker);
-                })
-                google.maps.event.addListener(marker, 'mouseout', function(event){
-                    infoWindow.close()
-                })
+            google.maps.event.addListenerOnce(map, 'idle', function() {
+                var marker = new google.maps.Marker({
+                    position: {lat:thisLat,lng:thisLng},
+                    map: map
+                });
+                map.setCenter({lat:thisLat,lng:thisLng});
             });
 
             
@@ -246,7 +231,9 @@
 
             <!-- Name here -->
                         <div class='col-12'>
-                            <h2 class='display-3 mt-3 text-center red-t'>{Display Name}</h2>
+
+                            <h2 class='display-3 mt-3 text-center red-t'>{{ name }}</h2>
+
                         </div>    
                     </div>
             <!-- Fill in fields -->
@@ -255,7 +242,11 @@
                                     <div class='col-5 p-3'>
                                         <div class='row orange p-3 mb-3 rounded shadow'>
                                             <div class='bg-light rounded shadow p-2'>
-                                                <p>{ALL INGREDIANTS}</p>
+
+                                                {% for i in ingredients %}
+                                                <p>{{ i.qty }} {{ i.units }} {{ i.name }}</p>
+                                                {% endfor %}
+
                                             </div>
                                         </div> 
                                         <div class="row red p-3 rounded shadow">
@@ -267,10 +258,16 @@
                                     <div class='col-5 p-3'>
                                         <div class='row yellow p-3 rounded shadow'>
                                             <div class='bg-light rounded shadow p-2 mb-3'>
-                                                <h2>{Comment & written by}</h2>
+
+                                                <!-- username goes here too -->
+                                                <p>{{ notes }}</p>
                                             </div>
                                             <div class='bg-light rounded shadow p-2'>
-                                                <h2>{Directions}</h2>
+                                                {% for each in steps %}
+                                                    <p>{{ each }}</p>
+                                                {% endfor %}
+
+
                                             </div>
                                         </div>
                                     </div>

@@ -44,13 +44,35 @@
         });
 
         // create new marker, default to hidden
-        function placeMarker(location) {
-            console.log('creating map marker at '+location['lat']+' '+location['lng'])
+        function placeMarker(thisMarker) {
+            console.log(thisMarker)
+            console.log('creating map marker at '+thisMarker['lat']+' '+thisMarker['lng'])
             var marker = new google.maps.Marker({
-                position: location, 
+                position: {lat:thisMarker['lat'],lng:thisMarker['lng']},
                 map: map,
                 visible: false // set to false
             });
+
+            var infoWindow;
+            google.maps.event.addListener(marker, 'mouseover', function(event){
+                infoString = '<div id="content" class="infoDiv"><p class="infoHeader">'+thisMarker.name+'</p><p class="infoNotes">'+thisMarker.notes+'</p></div>'
+                console.log(infoString);
+                infoWindow = new google.maps.InfoWindow({
+                    content: infoString,
+                    maxWidth: 170
+                })
+                infoWindow.open(map, marker);
+            });
+            google.maps.event.addListener(marker, 'mouseout', function(event){
+                infoWindow.close()
+            });
+            google.maps.event.addListener(marker, 'click', function(event){
+                window.location = "/recipes/"+thisMarker.id
+            });
+
+
+
+
             return marker;
         }
         
@@ -85,7 +107,7 @@
             google.maps.event.addListenerOnce(map, 'idle', function() {
                 for (var mkr in markersFromDatabase) {
                     console.log(markersFromDatabase[mkr]);
-                    var newMarker = placeMarker({lat:markersFromDatabase[mkr]['latitude'],lng:markersFromDatabase[mkr]['longitude']})
+                    var newMarker = placeMarker(markersFromDatabase[mkr]);
                     allMapMarkers.push(newMarker);
                 }
                 console.log('allMapMarkers');
@@ -161,7 +183,12 @@
             font-family: Poppins;
         }
 
-        #map{ height: 600px; }
+
+        #map{ height: 500px; }
+        .infoDiv{ width: 150px; overflow: hidden; }
+        .infoHeader{ font-size: 12px; font-weight: 600; margin: 0 0 10px;}
+        .notes{ font-size: 8px; font-style: italic; margin: 0; }
+
 
         html, body, div{
             margin: 0px !important;
