@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from apps.users.models import Profile
 
 class RecipeManager(models.Manager):
     def recipe_validator(self, postData):
