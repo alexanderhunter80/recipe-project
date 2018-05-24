@@ -213,3 +213,7 @@ def searchResults(request):
 # def ingSearch(request):
     # pass
     # return HttpResponse("501 Not Implemented")
+
+def logout_view(request):
+    logout(request)
+    return redirect("/")
