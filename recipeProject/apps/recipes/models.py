@@ -31,8 +31,8 @@ class Recipe(models.Model):
 class Entry(models.Model):
     qty = models.FloatField()
     unit = models.CharField(max_length=100)
-    recipe = models.ForeignKey(Recipe, related_name="entry", on_delete=models.CASCADE)
-    ingredient = models.ForeignKey(Ingredient, related_name="entry", on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, related_name="entries", on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, related_name="entries", on_delete=models.CASCADE)
 
 class Cookbook(models.Model):
     name = models.CharField(max_length=255)

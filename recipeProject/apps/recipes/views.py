@@ -48,8 +48,8 @@ def create(request):
     print('new recipe')
     print(newRecipe.name, newRecipe.notes, newRecipe.step)
     print('its ingredients')
-    print(newRecipe.ingredient_entry.all().values())
-    print(newRecipe.ingredient_entry.all().ingredient_id.all())
+    print(newRecipe.entries.all().values())
+    print(newRecipe.entries.all().ingredient.all())
     print('its location')
     print(newRecipe.location.latitude, newRecipe.location.longitude)
 
