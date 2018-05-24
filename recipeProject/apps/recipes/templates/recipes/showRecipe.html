@@ -71,11 +71,7 @@
                 if (marker != null){
                     marker.setMap(null);
                 }
-                marker = new google.maps.Marker({
-                    position: event.latLng,
-                    map: map,
-                    draggable: true
-                })
+
                 map.setCenter(event.latLng);
                 postLat = event.latLng.lat();
                 postLng = event.latLng.lng();
@@ -244,7 +240,7 @@
                 <div class="container-fluid ">
                     <div class="row">
                         <div class='col-12'>
-                            <h2 class='display-3 mt-3 text-center red-t'>Display Name</h2>
+                            <h2 class='display-3 mt-3 text-center red-t'>{{ name }}</h2>
                         </div>    
                     </div>
                                 <div class="row">
@@ -252,7 +248,9 @@
                                     <div class='col-5 p-3'>
                                         <div class='row orange p-3 mb-3 rounded shadow'>
                                             <div class='bg-light rounded shadow p-2'>
-                                                <p>ALL INGREDIANTS</p>
+                                                {% for i in ingredients %}
+                                                <p>{{ i.qty }} {{ i.units }} {{ i.name }}</p>
+                                                {% endfor %}
                                             </div>
                                         </div> 
                                         <div class="row red p-3 rounded shadow">
@@ -264,10 +262,14 @@
                                     <div class='col-5 p-3'>
                                         <div class='row yellow p-3 rounded shadow'>
                                             <div class='bg-light rounded shadow p-2 mb-3'>
-                                                <h2>Comment & written by</h2>
+                                                <!-- username goes here too -->
+                                                <p>{{ notes }}</p>
                                             </div>
                                             <div class='bg-light rounded shadow p-2'>
-                                                <h2>Directions</h2>
+                                                {% for each in steps %}
+                                                    <p>{{ each }}</p>
+                                                {% endfor %}
+
                                             </div>
                                         </div>
                                     </div>

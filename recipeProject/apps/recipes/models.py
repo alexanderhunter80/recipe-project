@@ -27,7 +27,7 @@ class Recipe(models.Model):
     notes = models.TextField(max_length=1000)
     user = models.ForeignKey(User, related_name="recipes", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)\
 
 class Entry(models.Model):
     qty = models.FloatField()
