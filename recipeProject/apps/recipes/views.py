@@ -62,7 +62,7 @@ def create(request):
         else:
             print('creating new ingredient')
             ingredLink = Ingredient.objects.create(name=e['ingred'])
-        Entry.objects.create(qty=e['qty'],unit=e['units'],ingredient_id=ingredLink,recipe_id=newRecipe) 
+        Entry.objects.create(qty=float(e['qty']),unit=e['units'],ingredient_id=ingredLink.id,recipe_id=newRecipe.id) 
     newLocation = Location.objects.create(latitude=allData['lat'],longitude=allData['lng'],recipe=newRecipe)
 
     # test printouts
@@ -82,9 +82,6 @@ def create(request):
 def show(request, n):
 
     if request.method == 'POST':    
-        ##############################################
-        # untested
-        ##############################################
 
         r = Recipe.objects.get(id=n)
         ingList = []
@@ -152,10 +149,6 @@ def mapSearch(request):
     return render(request, 'recipes/mapSearch.html', context)
 
 def mapSearchAjax(request):
-
-    ##########################################################################################################
-    # UNTESTED 
-    ##########################################################################################################
 
     allRecipes = Recipe.objects.all()
     mapData = []
