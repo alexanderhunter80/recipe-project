@@ -55,7 +55,7 @@
 
             var infoWindow;
             google.maps.event.addListener(marker, 'mouseover', function(event){
-                infoString = '<div id="content" class="infoDiv"><p class="infoHeader">'+thisMarker.name+'</p><p class="infoNotes">'+thisMarker.notes+'</p></div>'
+                infoString = '<div id="content" class="infoDiv"><p class="infoHeader">'+thisMarker.name+'</p><p class="infoNotes">Created by '+thisMarker.user+'</p><p class="infoNotes">'+thisMarker.notes+'</p></div>'
                 console.log(infoString);
                 infoWindow = new google.maps.InfoWindow({
                     content: infoString,
@@ -187,7 +187,7 @@
         #map{ height: 500px; }
         .infoDiv{ width: 150px; overflow: hidden; }
         .infoHeader{ font-size: 12px; font-weight: 600; margin: 0 0 10px;}
-        .notes{ font-size: 8px; font-style: italic; margin: 0; }
+        .infoNotes{ font-size: 10px; font-style: italic; margin: 0; }
 
 
         html, body, div{

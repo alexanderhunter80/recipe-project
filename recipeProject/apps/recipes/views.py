@@ -290,6 +290,7 @@ def mapSearchAjax(request):
         # entry['user'] = display name somehow
         entry['lat'] = r.location.latitude
         entry['lng'] = r.location.longitude
+        entry['user'] = r.user.username
         mapData.append(entry)
     print(mapData)
     dataDict = {'markers':mapData}
