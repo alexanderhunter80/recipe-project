@@ -310,3 +310,6 @@ def searchResults(request):
 def logout_view(request):
     logout(request)
     return redirect("/")
+
+def home(request):
+    return  render(request, 'recipes/landing.html')

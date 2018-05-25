@@ -2,6 +2,7 @@ from django.urls import path
 from . import views #pylint: disable = E0402
 
 urlpatterns = [
+    path('home', views.home), # GET only
     path('new', views.new), # GET only
     path('create', views.create), # POST only
     path('<int:n>', views.show), # if GET then show page, if DELETE then delete entry, if POST then update data
