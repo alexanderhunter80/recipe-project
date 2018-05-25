@@ -22,6 +22,13 @@
         $( document ).ready(function() {
 
 
+            $(".superSubmitButton").click(function(){
+                event.preventDefault();
+                var form = $(this).closest('form');
+                form.submit();
+            });
+
+
             // toggle sidebar
             $("#toggleSidebar").click(function(){
                 $("#sidebar").toggleClass('col-sm-2 d-none');
@@ -221,7 +228,7 @@
                 <li class="list-group-item-action"><i id='i' class="fas fa-book"></i> Your Cookbooks</li>
                 <ul class=''>
                     {% for i in cookbooks %}
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href="/recipes/books/{{cookbook.id}}">{cookbooks.name}</li>
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href="/recipes/books/{{i.id}}">{{i.name}}</li>
                     {% endfor %}
                 </ul>
                 <li class='list-group-item-action'><i id='i' class="fas fa-plus"></i><a href="recipes/new"> Add Recipe</a></li>
@@ -244,19 +251,49 @@
                     <div class="col-8 orange p-3 mb-3 rounded shadow mt-4">
 
                     <div class='bg-light rounded shadow pt-3 pl-3 pr-3 pb-1'>
-                        <h2>{Cookbook Title:}</h2>
-                        <p class='ml-4'>{Cookbook comment}</p>
+                        <h2>{{name}}</h2>
+                        <p class='ml-4'>{{notes}}</p>
+                        <h6>Recipes In This Book:</h6>
                         <ul>
-                        <li><a href="/books/{}">{Recipe Name}</a></li>
+                        {% for r in recipesIn %}
+                        <form action="/recipes/books/disassociate" method="POST">
+                            {%csrf_token%}
+                        <input type="hidden" name="cookbook" value="{{id}}">
+                        <input type="hidden" name="recipe" value="{{r.id}}">
+                        <li><a href="/recipes/{{r.id}}">{{r.name}}</a></li>
                             <ul>
-                                <li>{Comment}</li>
+                                <li>{{r.notes}}</li>
                             </ul>
                             <div class="row">
                                 <div class="col-12">
-                                    <a class='float-right'href="/recipes/books/{{ id }}/delete'">Delete Cookbook</a>
+                                    <a class='float-right superSubmitButton'>Remove from Cookbook</a>
                                 </div>
                             </div>
+                        </form>
+                        {% endfor %}
                         </ul>
+                        <hr>
+                        <h6>Your Other Recipes:</h6>
+                        <ul>
+                            {% for r in recipesNotIn %}
+                            <form action="/recipes/books/associate" method="POST">
+                                {%csrf_token%}
+                            <input type="hidden" name="cookbook" value="{{id}}">
+                            <input type="hidden" name="recipe" value="{{r.id}}">
+                            <li><a href="/recipes/{{r.id}}">{{r.name}}</a></li>
+                                <ul>
+                                    <li>{{r.notes}}</li>
+                                </ul>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a class='float-right superSubmitButton'>Add to Cookbook</a>
+                                    </div>
+                                </div>
+                            </form>
+                            {% endfor %}
+                            </ul>
+
+
                     </div>
                 </div>
             <div class="col-2"></div>

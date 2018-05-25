@@ -188,10 +188,10 @@
                 <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href="/recipes/yours"> Your Recipes</a></li>
                 <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
                 <li class="list-group-item-action"><i id='i' class="fas fa-book"></i> Your Cookbooks</li>
-                <ul class=''>
-                    {% for i in cookbooks %}
-                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href="/recipes/books/{{cookbook.id}}">{cookbooks.name}</li>
-                    {% endfor %}
+                <ul> 
+                {% for i in cookbooks %}
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href="/recipes/books/{{cookbook.id}}">{{i}}</li>
+                {% endfor %}
                 </ul>
                 <li class='list-group-item-action'><i id='i' class="fas fa-plus"></i><a href="recipes/new"> Add Recipe</a></li>
                 <hr>
