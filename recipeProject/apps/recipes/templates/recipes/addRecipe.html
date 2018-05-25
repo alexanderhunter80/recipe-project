@@ -192,6 +192,7 @@
         .form-qty{
             width: 20%;
             margin-bottom: 2px;
+            font-size: 10px;
         }
         #directions input{
             width: 95%;
@@ -299,7 +300,7 @@
                                                     {% endfor %}
                                             </div>
                                             <div class="row">
-                                                <input id='input1'name="qty1" type="text" class="form-qty">
+                                                <input id='input1'name="qty1" type="text" class="form-qty" placeholder='quantity'>
                                                     <select name="units1" class="form-units">
                                                         <option value="count">count</option>
                                                         <option value="tsp">tsp</option>
@@ -318,7 +319,7 @@
                                                         <option value="dash">dash</option>
                                                         <option value="to taste">to taste</option>
                                                     </select>
-                                                <input id='input2' name="ingred1" type="text" class="form-ingred">
+                                                <input id='input2' name="ingred1" type="text" class="form-ingred" placeholder='ingredient name'>
                                             </div>
                                             <div class="row" id="addIngredRow">
                                                 <button class="btn btn-outline-danger btn-sm mt-2 mb-2 shadow" id="addIngred">add row</button>
