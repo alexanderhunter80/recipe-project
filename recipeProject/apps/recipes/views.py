@@ -15,7 +15,7 @@ def populateBooks(request):
     thisUser = request.user
     cookList = thisUser.cookbooks.all()
     for c in cookList:
-        cookbooks.append(c.name)
+        cookbooks.append(c)
     print('list of cookbooks')
     print(cookbooks)
     return cookbooks
@@ -277,8 +277,13 @@ def confirmDelete(request, n):
     return render(request, "recipes/deleteRecipe.html", context)
 
 def newBook(request):
+    cookbooks = populateBooks(request)
+
+    context = {
+        'cookbooks' : cookbooks
+    }
     
-    return render(request, 'recipes/addBook.html')
+    return render(request, 'recipes/addBook.html', context)
 
 def createBook(request):
     print(request.POST)
@@ -291,13 +296,37 @@ def createBook(request):
     return redirect("/")
 
 def showBook(request, n):
+    cookbooks = populateBooks(request)
     b = Cookbook.objects.get(id=n)
+    recipesIn = b.recipes.all()
+    recipesNotIn = Recipe.objects.all().exclude(cookbooks=b)
     context = {
         'id' : b.id,
         'name' : b.name,
-        'user' : b.user
+        'user' : b.user,
+        'cookbooks' : cookbooks,
+        'notes' : b.notes,
+        'recipesIn' : recipesIn,
+        'recipesNotIn' : recipesNotIn
     }
+
+
+
     return render(request, "recipes/showBook.html", context)
+
+
+def associate(request):
+    cb = Cookbook.objects.get(id=request.POST['cookbook'])
+    r = Recipe.objects.get(id=request.POST['recipe'])
+    cb.recipes.add(r)
+    return redirect('/recipes/books/%s' % request.POST['cookbook'])
+
+def disassociate(request):
+    cb = Cookbook.objects.get(id=request.POST['cookbook'])
+    r = Recipe.objects.get(id=request.POST['recipe'])
+    cb.recipes.remove(r)
+    return redirect('/recipes/books/%s' % request.POST['cookbook'])
+
 
 def editBook(request, n):
     pass
