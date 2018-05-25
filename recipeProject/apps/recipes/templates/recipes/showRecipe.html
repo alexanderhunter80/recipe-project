@@ -63,6 +63,7 @@
                 url: '/recipes/'+id+'/ajax',
                 type: 'GET',
                 dataType: 'json',
+                async: false,
                 success: function(data) {
                     console.log('AJAX call successful');
                     thisLat = data['lat'];
@@ -259,15 +260,18 @@
                                         <div class='row yellow p-3 rounded shadow'>
                                             <div class='bg-light rounded shadow p-2 mb-3'>
 
-                                                <!-- username goes here too -->
+                                                <h6>Created by <a href="">{{ user }}</a></h6>
                                                 <p>{{ notes }}</p>
                                             </div>
                                             <div class='bg-light rounded shadow p-2'>
                                                 {% for each in steps %}
                                                     <p>{{ each }}</p>
                                                 {% endfor %}
-
-
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <a class='float-right'href="">Delete recipe</a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
