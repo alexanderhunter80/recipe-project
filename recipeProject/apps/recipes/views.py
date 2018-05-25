@@ -253,7 +253,7 @@ def confirmDelete(request, n):
 
 def newBook(request):
     pass
-    return HttpResponse("501 Not Implemented: newBook")
+    return render(request, 'recipes/addBook.html')
 
 def createBook(request):
     pass
