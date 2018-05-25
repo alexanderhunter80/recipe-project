@@ -13,11 +13,9 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
     </script>
     <script>
-        var rowsInIngred = 1;
-        var rowsInDirect = 1;
-        var postLat;
-        var postLng;
         var marker;
+        var thisLat;
+        var thisLng;
 
         // jQuery wrapper
         $( document ).ready(function() {
@@ -33,9 +31,9 @@
             // add latLng to POST
             $("#fake-submit").click( function() {
                 event.preventDefault();
-                console.log(postLat+' '+postLng)
-                $('<input type="hidden" name="lat" value="'+postLat+'">').insertBefore('#endForm');
-                $('<input type="hidden" name="lng" value="'+postLng+'">').insertBefore('#endForm');
+                console.log(thisLat+' '+thisLng)
+                $('<input type="hidden" name="lat" value="'+thisLat+'">').insertBefore('#endForm');
+                $('<input type="hidden" name="lng" value="'+thisLng+'">').insertBefore('#endForm');
                 $('#recipeForm').submit();
             });
 
@@ -86,16 +84,16 @@
                     draggable: true
                 })
                 map.setCenter(event.latLng);
-                postLat = event.latLng.lat();
-                postLng = event.latLng.lng();
-                console.log('Lat '+postLat+', Lng '+postLng);
+                thisLat = event.latLng.lat();
+                thisLng = event.latLng.lng();
+                console.log('Lat '+thisLat+', Lng '+thisLng);
 
                 // recenter map when marker is dragged
                 google.maps.event.addListener(marker, 'dragend', function(event){
                     map.setCenter(event.latLng);
-                    postLat = event.latLng.lat();
-                    postLng = event.latLng.lng();
-                    console.log('Lat '+postLat+', Lng '+postLng);
+                    thisLat = event.latLng.lat();
+                    thisLng = event.latLng.lng();
+                    console.log('Lat '+thisLat+', Lng '+thisLng);
                 })
                 
 
@@ -258,7 +256,7 @@
                                         <h2>map</h2>
                                     </div>
                                     <div class='col-6 pl-3 pr-4' id="notes">
-                                        <textarea class='form-control h-100 w-100' name="notes" placeholder="{{ notes }}" style="border-radius:7px;"></textarea>
+                                        <textarea class='form-control h-100 w-100' name="notes" style="border-radius:7px;">{{ notes }}</textarea>
                                     </div>
                                 </div>
                                     <div class="row">
