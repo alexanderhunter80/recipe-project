@@ -4,14 +4,16 @@ from apps.users.models import Profile
 import json
 from django.http import JsonResponse
 from django.contrib import messages
+from django.contrib.auth.models import User
 
 
 
-def populateBooks():
+def populateBooks(request):
 
     # navbar will need list of cookbooks, prototype code here
     cookbooks = []
-    cookList = Cookbook.objects.all()
+    thisUser = request.user
+    cookList = thisUser.cookbooks.all()
     for c in cookList:
         cookbooks.append(c.name)
     print('list of cookbooks')
@@ -22,7 +24,7 @@ def populateBooks():
 
 def new(request):
 
-    cookbooks = populateBooks()
+    cookbooks = populateBooks(request)
 
     context = {
         'cookbooks' : cookbooks
@@ -113,7 +115,7 @@ def show(request, n):
         stepsList = stepsList.split(',')
         print(stepsList)
 
-        cookbooks = populateBooks()
+        cookbooks = populateBooks(request)
 
         context = {
             'id' : r.id,
@@ -159,12 +161,18 @@ def confirmDelete(request, n):
     return HttpResponse("501 Not Implemented: confirmDelete")
 
 def newBook(request):
-    pass
+    
     return render(request, 'recipes/addBook.html')
 
 def createBook(request):
-    pass
-    return HttpResponse("501 Not Implemented: createBook")
+    print(request.POST)
+    Cookbook.objects.create(
+        name = request.POST['name'],
+        notes = request.POST['notes'],
+        user = request.user
+    )
+    print(Cookbook.objects.all())
+    return redirect("/")
 
 def showBook(reques, n):
     pass
@@ -180,7 +188,7 @@ def confirmDeleteBook(request, n):
 
 def mapSearch(request):
 
-    cookbooks = populateBooks()
+    cookbooks = populateBooks(request)
     context = { 'cookbooks' : cookbooks}
 
     return render(request, 'recipes/mapSearch.html', context)

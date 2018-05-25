@@ -235,11 +235,9 @@
                 <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
                 <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
                 <ul class=''>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
+                    {% for i in cookbooks %}
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> {{i}}</li>
+                    {% endfor %}
                 </ul>
             
                 <hr>
