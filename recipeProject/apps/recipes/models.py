@@ -7,13 +7,13 @@ class RecipeManager(models.Manager):
         errors = {}
         if len(postData['name']) < 3:
             errors['name'] = 'Field must be filled in'
-        if 'lat' not in postData:
+        if 'lat' not in postData or postData['lat'] == 'undefined':
             errors['map'] = 'Location must be entered'
         if len(postData['notes']) < 3:
             errors['notes'] = 'Field must be filled in'
         if len(postData['qty1']) < 0 or len(postData['ingred1']) < 0:
             errors['ing'] = 'At least one ingredient must be entered'
-        if len(postData['direct1']) < 0:
+        if len(postData['direct1']) < 1:
             errors['direct'] = 'Field must not be blank'
         if len(errors) > 0:
             result = {
@@ -38,7 +38,7 @@ class Recipe(models.Model):
     name = models.CharField(max_length=255)
     steps = models.TextField()
     notes = models.TextField(max_length=1000)
-    user = models.ForeignKey(User, related_name="recipes", on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, related_name="recipes", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = RecipeManager()
