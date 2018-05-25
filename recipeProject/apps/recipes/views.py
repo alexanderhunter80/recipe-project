@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .models import Recipe, RecipeManager, Ingredient, Entry, Cookbook, Location #pylint: disable = E0402
-from apps.users.models import Profile 
+from apps.users.models import Profile
 import json
 from django.http import JsonResponse
 from django.contrib import messages
@@ -247,10 +247,16 @@ def edit(request, n):
 
     return render(request, 'recipes/editRecipe.html', context)
 
-def confirmDelete(request, n):
+def delete(request, n):
     recipe = Recipe.objects.get(id=n)
     recipe.delete()
     return redirect("/recipes")
+
+def confirmDelete(request, n):
+    context = {
+        "id" : n
+    }
+    return render(request, "recipes/deleteRecipe.html", context)
 
 def newBook(request):
     pass
@@ -260,18 +266,29 @@ def createBook(request):
     pass
     return HttpResponse("501 Not Implemented: createBook")
 
-def showBook(reques, n):
-    pass
-    return HttpResponse("501 Not Implemented: showBook")
+def showBook(request, n):
+    b = Cookbook.objects.get(id=n)
+    context = {
+        'id' : b.id,
+        'name' : b.name,
+        'user' : b.user
+    }
+    return render(request, "recipes/showBook.html", context)
 
 def editBook(request, n):
     pass
     return HttpResponse("501 Not Implemented: editBook")
 
-def confirmDeleteBook(request, n):
+def deleteBook(request, n):
     cookbook = Cookbook.objects.get(id=n)
     cookbook.delete()
     return redirect("/recipes")
+
+def confirmDeleteBook(request, n):
+    context = {
+        "id" : n
+    }
+    return render(result, "recipes/deleteBook.html", context)
 
 def mapSearch(request):
 
