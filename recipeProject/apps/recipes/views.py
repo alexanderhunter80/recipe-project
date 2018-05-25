@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .models import Recipe, RecipeManager, Ingredient, Entry, Cookbook, Location #pylint: disable = E0402
-from apps.users.models import Profile 
+from apps.users.models import Profile
 import json
 from django.http import JsonResponse
 from django.contrib import messages
@@ -62,9 +62,14 @@ def create(request):
             print('ingredList',ingredList)  
             print('directList',directList)
 
-        newRecipe = Recipe.objects.create(name=allData['name'],steps=directList,notes=allData['notes'],user_id=1) # change this fake ass user_id
+        newRecipe = Recipe.objects.create(name=allData['name'],steps=directList,notes=allData['notes'],user_id=request.user.id)
         print('creating new recipe')
         print(newRecipe)
+        print(newRecipe.user.username)
+        theirRecipes = Profile.objects.get(id=request.user.id).recipes.all()
+        print(theirRecipes)
+        for each in theirRecipes:
+            print(each.name)
         for e in ingredList:
             if e['ingred'] in Ingredient.objects.all().values('name'):
                 print('found ingredient in table')
@@ -85,8 +90,11 @@ def create(request):
         print('its location')
         print(newLocation.latitude, newLocation.longitude)
 
-
     return redirect('/recipes/new')
+    
+
+
+
 
 
 
@@ -122,7 +130,7 @@ def show(request, n):
             'name' : r.name,
             'notes' : r.notes,
             'steps' : stepsList,
-            # 'user' : user displayname,
+            'user' : r.user.username,
             'ingredients' : ingList,
             'cookbooks' : cookbooks,
             'recipeObject' : r
@@ -130,12 +138,78 @@ def show(request, n):
 
         return render(request, 'recipes/showRecipe.html', context)
 
-
     elif request.method == 'DELETE':
         return HttpResponse("501 Not Implemented:  deleteRecipe")
 
     elif request.method == 'POST':
-        return HttpResponse()
+
+        r = Recipe.objects.get(id=n)
+
+        result = Recipe.objects.recipe_validator(request.POST)
+        if result['status'] == True:
+            for key, value in result['errors'].items():
+                messages.error(request, value, extra_tags = key)
+            return redirect('/recipes/new')
+        else:
+            allData = request.POST.dict()
+            ingredList = []
+            directList = []
+            for key in allData:
+                if key == 'csrfmiddlewaretoken':
+                    continue
+                elif 'qty' in key:
+                    ingredDict = {}
+                    ingredDict['qty'] = allData[key]
+                elif 'units' in key:
+                    ingredDict['units'] = allData[key]
+                elif 'ingred' in key:
+                    ingredDict['ingred'] = allData[key]
+                    ingredList.append(ingredDict)
+                elif 'direct' in key:
+                    directList.append(allData[key])
+                print('ingredList',ingredList)  
+                print('directList',directList)
+
+            #r.update(name=allData['name'],steps=directList,notes=allData['notes'])
+            r.name=allData['name']
+            r.steps=directList
+            r.notes=allData['notes']
+            r.save()
+
+            deleteEntries = r.entries.all()
+            for each in deleteEntries:
+                each.delete()
+
+            for e in ingredList:
+                if e['ingred'] in Ingredient.objects.all().values('name'):
+                    print('found ingredient in table')
+                    ingredLink = Ingredient.objects.get(name=e['ingred'])
+                else:
+                    print('creating new ingredient')
+                    ingredLink = Ingredient.objects.create(name=e['ingred'])
+                Entry.objects.create(qty=e['qty'],unit=e['units'],ingredient_id=ingredLink.id,recipe_id=r.id) # wtf do i do with this
+            r.location.latitude=allData['lat']
+            r.location.longitude=allData['lng']
+            r.location.save()
+
+            return redirect('/recipes/%s' % r.id)
+
+
+
+def yours(request):
+
+    thisUser = Profile.objects.get(username=request.user)
+    allRecipes = thisUser.recipes.all()
+    print(allRecipes)
+    cookbooks = populateBooks()
+    context = {
+        'allRecipes' : allRecipes,
+        'cookbooks' : cookbooks
+    }
+
+    return render(request, 'recipes/allRecipes.html', context)
+
+
 
 
 
@@ -153,12 +227,54 @@ def showAjax(request, n):
 
 
 def edit(request, n):
-    pass
-    return HttpResponse("501 Not Implemented: edit")
+
+    r = Recipe.objects.get(id=n)
+    print(r)
+    ingList = []
+    for e in r.entries.all():
+        print(e)
+        entry = {}
+        entry['qty'] = e.qty
+        entry['units'] = e.unit
+        entry['name'] = e.ingredient.name
+        ingList.append(entry)
+    print('list of ingredient rows')
+    print(ingList)
+    print('notes')
+    print(r.notes)
+
+    stepsList = r.steps.replace('[','')
+    stepsList = stepsList.replace(']','')
+    stepsList = stepsList.replace(" '",'')
+    stepsList = stepsList.replace("'",'')
+    stepsList = stepsList.split(',')
+    print(stepsList)
+
+    cookbooks = populateBooks()
+
+    context = {
+        'recipeObject' : r,
+        'id' : r.id,
+        'name' : r.name,
+        'notes' : r.notes,
+        'steps' : stepsList,
+        'user' : r.user.username,
+        'ingredients' : ingList,
+        'cookbooks' : cookbooks
+    }
+
+    return render(request, 'recipes/editRecipe.html', context)
+
+def delete(request, n):
+    recipe = Recipe.objects.get(id=n)
+    recipe.delete()
+    return redirect("/recipes")
 
 def confirmDelete(request, n):
-    pass
-    return HttpResponse("501 Not Implemented: confirmDelete")
+    context = {
+        "id" : n
+    }
+    return render(request, "recipes/deleteRecipe.html", context)
 
 def newBook(request):
     
@@ -174,17 +290,29 @@ def createBook(request):
     print(Cookbook.objects.all())
     return redirect("/")
 
-def showBook(reques, n):
-    pass
-    return HttpResponse("501 Not Implemented: showBook")
+def showBook(request, n):
+    b = Cookbook.objects.get(id=n)
+    context = {
+        'id' : b.id,
+        'name' : b.name,
+        'user' : b.user
+    }
+    return render(request, "recipes/showBook.html", context)
 
 def editBook(request, n):
     pass
     return HttpResponse("501 Not Implemented: editBook")
 
+def deleteBook(request, n):
+    cookbook = Cookbook.objects.get(id=n)
+    cookbook.delete()
+    return redirect("/recipes")
+
 def confirmDeleteBook(request, n):
-    pass
-    return HttpResponse("501 Not Implemented: confirmDeleteBook")
+    context = {
+        "id" : n
+    }
+    return render(result, "recipes/deleteBook.html", context)
 
 def mapSearch(request):
 
@@ -205,6 +333,7 @@ def mapSearchAjax(request):
         # entry['user'] = display name somehow
         entry['lat'] = r.location.latitude
         entry['lng'] = r.location.longitude
+        entry['user'] = r.user.username
         mapData.append(entry)
     print(mapData)
     dataDict = {'markers':mapData}
@@ -225,3 +354,6 @@ def searchResults(request):
 def logout_view(request):
     logout(request)
     return redirect("/")
+
+def home(request):
+    return  render(request, 'recipes/landing.html')

@@ -13,10 +13,9 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
     </script>
     <script>
-        var rowsInIngred = 1;
-        var rowsInDirect = 1;
-        var postLat;
-        var postLng;
+        var marker;
+        var thisLat;
+        var thisLng;
 
         // jQuery wrapper
         $( document ).ready(function() {
@@ -28,44 +27,53 @@
                 $(".alsoHide").toggleClass('hide');
             });
 
-            $("#addIngred").click(function(){
-                event.preventDefault();
-                rowsInIngred++;
-                var newRowString = "";
-                newRowString += '<div class="row"><input name="qty'+rowsInIngred+'" type="text" class="form-qty"><select name="units'+rowsInIngred+'" class="form-units"><option value="count">count</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="cup">cup</option><option value="pint">pint</option><option value="quart">quart</option><option value="gallon">gallon</option><option value="oz">oz</option><option value="fl oz">fl oz</option><option value="pound">pound</option><option value="g">g</option><option value="kg">kg</option><option value="mL">mL</option><option value="L">L</option><option value="dash">dash</option><option value="to taste">to taste</option></select><input name="ingred'+rowsInIngred+'" type="text" class="form-ingred"></div>';
-                $(newRowString).insertBefore($("#addIngredRow"));
-            });
-
-            $("#addDirect").click(function(){
-                event.preventDefault();
-                rowsInDirect++;
-                var newRowString = "";
-                newRowString += '<div class="row"><input name="direct'+rowsInDirect+'" type="text"></div>';
-                $(newRowString).insertBefore($("#addDirectRow"));
-            });
 
             // add latLng to POST
             $("#fake-submit").click( function() {
                 event.preventDefault();
-                console.log(postLat+' '+postLng)
-                $('<input type="hidden" name="lat" value="'+postLat+'">').insertBefore('#endForm');
-                $('<input type="hidden" name="lng" value="'+postLng+'">').insertBefore('#endForm');
+                console.log(thisLat+' '+thisLng)
+                $('<input type="hidden" name="lat" value="'+thisLat+'">').insertBefore('#endForm');
+                $('<input type="hidden" name="lng" value="'+thisLng+'">').insertBefore('#endForm');
                 $('#recipeForm').submit();
             });
 
         });
 
+        // AJAX call to get recipe location
+        function getLocation() {
+            var id = {{recipeObject.id}}
+            $.ajax({
+                url: '/recipes/'+id+'/ajax',
+                type: 'GET',
+                dataType: 'json',
+                async: false,
+                success: function(data) {
+                    console.log('AJAX call successful');
+                    thisLat = data['lat'];
+                    thisLng = data['lng'];
+                    console.log('marker location');
+                    console.log(thisLat, thisLng);
+                }
+            })
+        }
+
         // create map
         function initMap() {
-            var spaceNeedle = {lat: 47.6205, lng: -122.3493};
+            getLocation();
             var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 4,
-            center: spaceNeedle,
             mapTypeId: google.maps.MapTypeId.ROADMAP
             });
 
+            google.maps.event.addListenerOnce(map, 'idle', function() {
+                marker = new google.maps.Marker({
+                    position: {lat:thisLat,lng:thisLng},
+                    map: map
+                });
+                map.setCenter({lat:thisLat,lng:thisLng});
+            });
+
             // attach click listener that creates a marker, erasing previous marker if necessary
-            var marker;
             google.maps.event.addListener(map, 'click', function(event) {
                 if (marker != null){
                     marker.setMap(null);
@@ -76,31 +84,19 @@
                     draggable: true
                 })
                 map.setCenter(event.latLng);
-                postLat = event.latLng.lat();
-                postLng = event.latLng.lng();
-                console.log('Lat '+postLat+', Lng '+postLng);
+                thisLat = event.latLng.lat();
+                thisLng = event.latLng.lng();
+                console.log('Lat '+thisLat+', Lng '+thisLng);
 
                 // recenter map when marker is dragged
                 google.maps.event.addListener(marker, 'dragend', function(event){
                     map.setCenter(event.latLng);
-                    postLat = event.latLng.lat();
-                    postLng = event.latLng.lng();
-                    console.log('Lat '+postLat+', Lng '+postLng);
+                    thisLat = event.latLng.lat();
+                    thisLng = event.latLng.lng();
+                    console.log('Lat '+thisLat+', Lng '+thisLng);
                 })
                 
-                // open infoWindow on mouseover, close again when mouseout
-                var infoWindow;
-                google.maps.event.addListener(marker, 'mouseover', function(event){
-                    infoString = '<div id="content"><p>Latitude: '+event.latLng.lat()+'</p><p>Longitude: '+event.latLng.lng()+'</p></div>'
-                    console.log(infoString);
-                    infoWindow = new google.maps.InfoWindow({
-                        content: infoString
-                    })
-                    infoWindow.open(map, marker);
-                })
-                google.maps.event.addListener(marker, 'mouseout', function(event){
-                    infoWindow.close()
-                })
+
             });
 
             
@@ -245,14 +241,14 @@
 <!--                 <div class='orange p-4 shadow' style='border-radius: 25px;'>
                     <div class='red p-4 shadow' style='border-radius: 25px;'> -->
                         <div class='p-3 shadow border' style='border-radius: 25px; background-color: white; '>
-                            <form class="form-group" action="/recipes/create" method="POST" id="recipeForm">
+                            <form class="form-group" action="/recipes/{{id}}" method="POST" id="recipeForm">
                                 {% csrf_token %}
                                 <div class="row">
-                                    <h2 class='display-5 ml-2'>Add a new recipe:</h2>    
+                                    <h2 class='display-5 ml-2'>Edit recipe:</h2>    
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        <input class='form-control mb-3'type="text" name="name" placeholder="add recipe name">
+                                        <input class='form-control mb-3'type="text" name="name" value="{{ name }}">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -260,7 +256,7 @@
                                         <h2>map</h2>
                                     </div>
                                     <div class='col-6 pl-3 pr-4' id="notes">
-                                        <textarea class='form-control h-100 w-100'name="notes" placeholder="Leave a comment or description about your recipe..." style="border-radius:7px;"></textarea>
+                                        <textarea class='form-control h-100 w-100' name="notes" style="border-radius:7px;">{{ notes }}</textarea>
                                     </div>
                                 </div>
                                     <div class="row">
@@ -268,42 +264,40 @@
                                             <div class="row">
                                                 <h3>Ingredients:</h3>
                                             </div>
+                                            {% for i in ingredients %}
                                             <div class="row">
-                                                <input id='input1'name="qty1" type="text" class="form-qty">
-                                                    <select name="units1" class="form-units">
-                                                        <option value="count">count</option>
-                                                        <option value="tsp">tsp</option>
-                                                        <option value="tbsp">tbsp</option>
-                                                        <option value="cup">cup</option>
-                                                        <option value="pint">pint</option>
-                                                        <option value="quart">quart</option>
-                                                        <option value="gallon">gallon</option>
-                                                        <option value="oz">oz</option>
-                                                        <option value="fl oz">fl oz</option>
-                                                        <option value="pound">pound</option>
-                                                        <option value="g">g</option>
-                                                        <option value="kg">kg</option>
-                                                        <option value="mL">mL</option>
-                                                        <option value="L">L</option>
-                                                        <option value="dash">dash</option>
-                                                        <option value="to taste">to taste</option>
+                                                <input id='input1'name="qty{{ forloop.counter }}" type="text" class="form-qty" value="{{ i.qty }}">
+                                                    <select name="units{{ forloop.counter }}" class="form-units">
+                                                        <option value="count" {% if i.units == "count" %}selected{% endif %}>count</option>
+                                                        <option value="tsp" {% if i.units == "tsp" %}selected{% endif %}>tsp</option>
+                                                        <option value="tbsp" {% if i.units == "tbsp" %}selected{% endif %}>tbsp</option>
+                                                        <option value="cup" {% if i.units == "cup" %}selected{% endif %}>cup</option>
+                                                        <option value="pint" {% if i.units == "pint" %}selected{% endif %}>pint</option>
+                                                        <option value="quart" {% if i.units == "quart" %}selected{% endif %}>quart</option>
+                                                        <option value="gallon" {% if i.units == "gallon" %}selected{% endif %}>gallon</option>
+                                                        <option value="oz" {% if i.units == "oz" %}selected{% endif %}>oz</option>
+                                                        <option value="fl oz" {% if i.units == "fl oz" %}selected{% endif %}>fl oz</option>
+                                                        <option value="pound" {% if i.units == "pound" %}selected{% endif %}>pound</option>
+                                                        <option value="g" {% if i.units == "g" %}selected{% endif %}>g</option>
+                                                        <option value="kg" {% if i.units == "kg" %}selected{% endif %}>kg</option>
+                                                        <option value="mL" {% if i.units == "mL" %}selected{% endif %}>mL</option>
+                                                        <option value="L" {% if i.units == "L" %}selected{% endif %}>L</option>
+                                                        <option value="dash" {% if i.units == "dash" %}selected{% endif %}>dash</option>
+                                                        <option value="to taste" {% if i.units == "to taste" %}selected{% endif %}>to taste</option>
                                                     </select>
-                                                <input id='input2' name="ingred1" type="text" class="form-ingred">
+                                                <input id='input2' name="ingred{{ forloop.counter }}" type="text" class="form-ingred" value="{{i.name}}" >
                                             </div>
-                                            <div class="row" id="addIngredRow">
-                                                <button class="btn btn-outline-danger btn-sm mt-2 mb-2 shadow" id="addIngred">add row</button>
-                                            </div>
+                                            {% endfor %}
                                         </div>
                                         <div class="col-6 pl-3 pt-3" id="directions">
                                             <div class="row">
                                                 <h3>Directions:</h3>
                                             </div>
+                                            {% for s in steps %}
                                             <div class="row">
-                                                <input name="direct1" type="text">
+                                                <input name="direct{{ forloop.counter }}" type="text" value="{{ s }}">
                                             </div>
-                                            <div class="row" id="addDirectRow">
-                                                <button class="btn btn-outline-danger btn-sm mt-2 mb-2 shadow" id="addDirect">add row</button>
-                                            </div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top: 2%;">
