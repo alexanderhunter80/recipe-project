@@ -201,7 +201,7 @@ def yours(request):
     thisUser = Profile.objects.get(username=request.user)
     allRecipes = thisUser.recipes.all()
     print(allRecipes)
-    cookbooks = populateBooks()
+    cookbooks = populateBooks(request)
     context = {
         'allRecipes' : allRecipes,
         'cookbooks' : cookbooks
