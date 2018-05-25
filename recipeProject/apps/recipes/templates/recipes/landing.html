@@ -167,6 +167,9 @@
             color: #bf3521;
             margin-right: 5px;
         }
+        .green{
+            background-color: #28a745;
+        }
         #map{ height: 250px; }
     </style>
 </head>
@@ -181,7 +184,7 @@
             <div class="col-lg-5 col-sm-2"></div>
         </div>
     </nav>
-<div class="wrapper " id="wrapper">
+    <div class="wrapper " id="wrapper">
         <div class="row">
             <div id="sidebar" class="col-sm-2 border-bottom border-right shadow pt-4">
                 <ul class="sidebar-nav green_t"> 
@@ -205,6 +208,71 @@
                     <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
                 </ul>
             </div>
+
+            <div id="body" class="col-sm-10 border-left p-0">
+                <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-3 orange p-3 mb-3 rounded shadow mt-4">
+                            <div class='bg-light rounded shadow p-3'>
+                                <h5 class='mt-2'>Welcome, Name</h5>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                <div class="container-fluid ">
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8 red p-3 mb-3 rounded shadow mt-4">
+                            <div class='bg-light rounded shadow p-3'>
+                                <p>Check out recently upladed recipes:</p>
+                                <div class="row">
+                                    <div class="col-4 p-2 border">
+                                        <p>recipe 1</p>
+                                    </div>
+                                    <div class="col-4 p-2 border">
+                                        <p>recipe 2</p>
+                                    </div>
+                                    <div class="col-4 p-2 border">
+                                        <p>recipe 3</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-10 green p-3 mb-3 rounded shadow mt-4">
+                            <div class='bg-light rounded shadow p-3'>
+                                <p>Your latest recipe uploads:</p>
+                                <div class="row">
+                                    <div class="col-4 p-2 border">
+                                        <p>recipe 1</p>
+                                    </div>
+                                    <div class="col-4 p-2 border">
+                                        <p>recipe 2</p>
+                                    </div>
+                                    <div class="col-4 p-2 border">
+                                        <p>recipe 3</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8 yellow p-3 mb-3 rounded shadow mt-4">
+                            <div class='bg-light rounded shadow p-3'>
+                                <h2 class='text-center mt-2'>Go to the <a href="/recipes/mapsearch">map</a> and see what pops up!</h2>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+</div>
 </div> 
 </body>
 </html> 
