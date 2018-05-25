@@ -250,7 +250,7 @@ def edit(request, n):
     stepsList = stepsList.split(',')
     print(stepsList)
 
-    cookbooks = populateBooks()
+    cookbooks = populateBooks(request)
 
     context = {
         'recipeObject' : r,
@@ -293,7 +293,7 @@ def createBook(request):
         user = request.user
     )
     print(Cookbook.objects.all())
-    return redirect("/")
+    return redirect("/recipes/books/%s" % Cookbook.objects.last().id)
 
 def showBook(request, n):
     cookbooks = populateBooks(request)
@@ -389,7 +389,10 @@ def home(request):
     print(rec)
     orderRec = rec.order_by('-created_at')[:3]
 
+    cookbooks = populateBooks(request)
+
     context={
+        'cookbooks' : cookbooks,
         'recipes': orderRec,
         'user_recipes': Recipe.objects.filter(user=request.user.id).order_by('-created_at')[:3]
     }
