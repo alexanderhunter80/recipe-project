@@ -9,9 +9,6 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANNuBwaqrVDWe5_E9g0RPCeyGwTuNJlsc&callback=initMap">
-    </script>
     <script>
         var rowsInIngred = 1;
         var rowsInDirect = 1;
@@ -28,84 +25,7 @@
                 $("#body").toggleClass('col-sm-10 col-sm-12');
                 $(".alsoHide").toggleClass('hide');
             });
-
-            $("#addIngred").click(function(){
-                event.preventDefault();
-                rowsInIngred++;
-                var newRowString = "";
-                newRowString += '<div class="row"><input name="qty'+rowsInIngred+'" type="text" class="form-qty"><select name="units'+rowsInIngred+'" class="form-units"><option value="count">count</option><option value="tsp">tsp</option><option value="tbsp">tbsp</option><option value="cup">cup</option><option value="pint">pint</option><option value="quart">quart</option><option value="gallon">gallon</option><option value="oz">oz</option><option value="fl oz">fl oz</option><option value="pound">pound</option><option value="g">g</option><option value="kg">kg</option><option value="mL">mL</option><option value="L">L</option><option value="dash">dash</option><option value="to taste">to taste</option></select><input name="ingred'+rowsInIngred+'" type="text" class="form-ingred"></div>';
-                $(newRowString).insertBefore($("#addIngredRow"));
-            });
-
-            $("#addDirect").click(function(){
-                event.preventDefault();
-                rowsInDirect++;
-                var newRowString = "";
-                newRowString += '<div class="row"><input name="direct'+rowsInDirect+'" type="text"></div>';
-                $(newRowString).insertBefore($("#addDirectRow"));
-            });
-
-            // add latLng to POST
-            $("#fake-submit").click( function() {
-                event.preventDefault();
-                console.log(postLat+' '+postLng)
-                $('<input type="hidden" name="lat" value="'+postLat+'">').insertBefore('#endForm');
-                $('<input type="hidden" name="lng" value="'+postLng+'">').insertBefore('#endForm');
-                $('#recipeForm').submit();
-            });
-
         });
-
-        // create map
-        function initMap() {
-            var spaceNeedle = {lat: 47.6205, lng: -122.3493};
-            var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 4,
-            center: spaceNeedle,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-            });
-
-            // attach click listener that creates a marker, erasing previous marker if necessary
-            var marker;
-            google.maps.event.addListener(map, 'click', function(event) {
-                if (marker != null){
-                    marker.setMap(null);
-                }
-                marker = new google.maps.Marker({
-                    position: event.latLng,
-                    map: map,
-                    draggable: true
-                })
-                map.setCenter(event.latLng);
-                postLat = event.latLng.lat();
-                postLng = event.latLng.lng();
-                console.log('Lat '+postLat+', Lng '+postLng);
-
-                // recenter map when marker is dragged
-                google.maps.event.addListener(marker, 'dragend', function(event){
-                    map.setCenter(event.latLng);
-                    postLat = event.latLng.lat();
-                    postLng = event.latLng.lng();
-                    console.log('Lat '+postLat+', Lng '+postLng);
-                })
-                
-                // open infoWindow on mouseover, close again when mouseout
-                var infoWindow;
-                google.maps.event.addListener(marker, 'mouseover', function(event){
-                    infoString = '<div id="content"><p>Latitude: '+event.latLng.lat()+'</p><p>Longitude: '+event.latLng.lng()+'</p></div>'
-                    console.log(infoString);
-                    infoWindow = new google.maps.InfoWindow({
-                        content: infoString
-                    })
-                    infoWindow.open(map, marker);
-                })
-                google.maps.event.addListener(marker, 'mouseout', function(event){
-                    infoWindow.close()
-                })
-            });
-
-            
-        }  // end of initMap()
 
 
 
@@ -249,13 +169,15 @@
 
                         <h2>All Recipes</h2>
                         <ul>
-                        <li><a href="/books/{}">{Recipe Name}</a></li>
+                        {% for rec in allRecipes %}
+                        <li><a href="/recipes/{{ rec.id }}">{{rec.name}}</a></li>
                             <ul>
-                                <li>{notes}</li>
-                                <li>{created_at}</li>
-                                <li><a href="/recipes/books/{}/delete'">Delete Recipe</a></li>
-                                <li><a href="/recipes/books/{}/delete'">Edit Recipe</a></li>
-                            </ul>   
+                                <li>{{ rec.notes }}</li>
+                                <li>{{ rec.created_at }}</li>
+                                <li><a href="/recipes/{{ rec.id }}/delete">Delete Recipe</a></li>
+                                <li><a href="/recipes/{{ rec.id }}/edit">Edit Recipe</a></li>
+                            </ul>
+                        {% endfor %}   
                         </ul>
                     </div>
                 </div>

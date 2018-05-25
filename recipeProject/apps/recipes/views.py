@@ -194,6 +194,22 @@ def show(request, n):
 
 
 
+def yours(request):
+
+    thisUser = Profile.objects.get(username=request.user)
+    allRecipes = thisUser.recipes.all()
+    print(allRecipes)
+    cookbooks = populateBooks()
+    context = {
+        'allRecipes' : allRecipes,
+        'cookbooks' : cookbooks
+    }
+
+    return render(request, 'recipes/allRecipes.html', context)
+
+
+
+
 
 def showAjax(request, n):
 
