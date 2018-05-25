@@ -204,12 +204,13 @@
             <ul class="sidebar-nav green_t"> 
                 <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href="/recipes/yours"> Your Recipes</a></li>
                 <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
-                <li class="list-group-item-action"><i id='i' class="fas fa-book"></i> Your Cookbooks</li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a>></li>
                 <ul class=''>
                     {% for i in cookbooks %}
                             <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href="/recipes/books/{{cookbook.id}}">{cookbooks.name}</li>
                     {% endfor %}
                 </ul>
+                <li class='list-group-item-action'><i id='i' class="fas fa-plus"></i><a href="/recipes/books/create"> Add Cookbook</a></li>
                 <li class='list-group-item-action'><i id='i' class="fas fa-plus"></i><a href="recipes/new"> Add Recipe</a></li>
                 <hr>
                 <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href="/recipes/mapsearch"> Map Search</a></li>
@@ -266,10 +267,16 @@
                                                     <p>{{ each }}</p>
                                                 {% endfor %}
                                                 <div class="row">
+                                                        <div class="col-12">
+                                                            <a class='float-right' href="/recipes/{{ id }}/edit">Edit recipe</a>
+                                                        </div>
+                                                    </div>
+                                                <div class="row">
                                                     <div class="col-12">
                                                         <a class='float-right' href="/recipes/{{ id }}/delete">Delete recipe</a>
                                                     </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>

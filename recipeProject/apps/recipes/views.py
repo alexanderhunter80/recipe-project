@@ -89,8 +89,8 @@ def create(request):
             print(e.ingredient.name)
         print('its location')
         print(newLocation.latitude, newLocation.longitude)
-
-    return redirect('/recipes/new')
+        id = str(newRecipe.id)
+    return redirect('/recipes/'+id)
     
 
 
@@ -268,7 +268,7 @@ def edit(request, n):
 def delete(request, n):
     recipe = Recipe.objects.get(id=n)
     recipe.delete()
-    return redirect("/recipes")
+    return redirect("/recipes/yours")
 
 def confirmDelete(request, n):
     context = {
@@ -306,7 +306,7 @@ def editBook(request, n):
 def deleteBook(request, n):
     cookbook = Cookbook.objects.get(id=n)
     cookbook.delete()
-    return redirect("/recipes")
+    return redirect("/recipes/home")
 
 def confirmDeleteBook(request, n):
     context = {
@@ -356,4 +356,12 @@ def logout_view(request):
     return redirect("/")
 
 def home(request):
-    return  render(request, 'recipes/landing.html')
+    rec = Recipe.objects.all()
+    print(rec)
+    orderRec = rec.order_by('-created_at')[:3]
+
+    context={
+        'recipes': orderRec,
+        'user_recipes': Recipe.objects.filter(user=request.user.id).order_by('-created_at')[:3]
+    }
+    return  render(request, 'recipes/landing.html', context)
