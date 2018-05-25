@@ -197,7 +197,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top off_white shadow">
+        <nav class="navbar navbar-default navbar-fixed-top off_white shadow">
         <div class="container-fluid">
             <div class="col-lg-1 col-sm-1">
                 <button id="toggleSidebar" class="btn off_white"><i id='ham'class="fas fa-bars red-t"></i></button>
@@ -211,24 +211,22 @@
         <div class="row">
             <div id="sidebar" class="col-sm-2 border-bottom border-right shadow pt-4" style='background-color: white'>
             <ul class="sidebar-nav green_t"> 
-                <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href=""> Your Recipes</a></li>
+                <li class="list-group-item-action active"><i id='i' class="fas fa-book-open"></i><a href="/recipes/yours"> Your Recipes</a></li>
                 <li class="list-group-item-action"><i id='i' class="far fa-star"></i><a href=""> Starred Recipes</a></li>
-                <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Your Cookbooks</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-book"></i> Your Cookbooks</li>
                 <ul class=''>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> (for loop)</li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 1</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 2</a></li>
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href=""> Book 3</a></li>
+                    {% for i in cookbooks %}
+                            <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href="/recipes/books/{{cookbook.id}}">{cookbooks.name}</li>
+                    {% endfor %}
                 </ul>
-            
+                <li class='list-group-item-action'><i id='i' class="fas fa-plus"></i><a href="recipes/new"> Add Recipe</a></li>
                 <hr>
-                <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href=""> Map Search</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href="/recipes/mapsearch"> Map Search</a></li>
                 <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
                 <li class="list-group-item-action"><i id='i' class="fas fa-users"></i><a href=""> User Search</a></li>
                 <hr>
-                <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href=""> Your Profile</a></li>
-                <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href=""> Log Out</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-home"></i><a href="/recipes/home"> Home</a></li>
+                <li class="list-group-item-action"><i id='i' class="fas fa-sign-out-alt"></i><a href="/logout"> Log Out</a></li>
             </ul>
         </div>
             <!-- end of sidebar -->
