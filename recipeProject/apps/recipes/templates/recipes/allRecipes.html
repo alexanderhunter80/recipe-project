@@ -243,21 +243,19 @@
             <div class="container-fluid ">
                 <div class="row">
                     <div class="col-2"></div>
-                    <div class="col-8 orange p-3 mb-3 rounded shadow mt-4">
+                    <div class="col-8 yellow p-3 mb-3 rounded shadow mt-4">
 
                     <div class='bg-light rounded shadow pt-3 pl-3 pr-3 pb-1'>
-                        <h2>{Cookbook Title:}</h2>
-                        <p class='ml-4'>{Cookbook comment}</p>
+
+                        <h2>All Recipes</h2>
                         <ul>
                         <li><a href="/books/{}">{Recipe Name}</a></li>
                             <ul>
-                                <li>{Comment}</li>
-                            </ul>
-                            <div class="row">
-                                <div class="col-12">
-                                    <a class='float-right'href="/recipes/books/{}/delete'">Delete Cookbook</a>
-                                </div>
-                            </div>
+                                <li>{notes}</li>
+                                <li>{created_at}</li>
+                                <li><a href="/recipes/books/{}/delete'">Delete Recipe</a></li>
+                                <li><a href="/recipes/books/{}/delete'">Edit Recipe</a></li>
+                            </ul>   
                         </ul>
                     </div>
                 </div>
