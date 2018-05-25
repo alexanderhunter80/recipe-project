@@ -18,7 +18,7 @@ def login(request):
     if not user.username:
         return redirect("/newuser")
     else:
-        return redirect("/")
+        return redirect("/recipes/home")
 
 def create_username(request):
     user_id = request.user.id
@@ -30,7 +30,7 @@ def create_username(request):
     auth_user.save()
     storage = messages.get_messages(request)
     storage.used = True
-    messages.add_message(request, messages.INFO, "Successfully logged in as " + user.username + ".")
+    # messages.add_message(request, messages.INFO, "Successfully logged in as " + user.username + ".")
     return redirect("/")
 
 def logout_view(request):

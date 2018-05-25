@@ -190,10 +190,11 @@
                 <li class="list-group-item-action"><i id='i' class="fas fa-book"></i> Your Cookbooks</li>
                 <ul> 
                 {% for i in cookbooks %}
-                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href="/recipes/books/{{cookbook.id}}">{{i}}</li>
+                    <li class="list-group-item-action"><i id='i' class="fas fa-book"></i><a href="/recipes/books/{{i.id}}">{{i.name}}</li>
                 {% endfor %}
                 </ul>
-                <li class='list-group-item-action'><i id='i' class="fas fa-plus"></i><a href="recipes/new"> Add Recipe</a></li>
+                <li class='list-group-item-action'><i id='i' class="fas fa-plus"></i><a href="/recipes/books/create"> Add Cookbook</a></li>
+                <li class='list-group-item-action'><i id='i' class="fas fa-plus"></i><a href="/recipes/new"> Add Recipe</a></li>
                 <hr>
                 <li class="list-group-item-action"><i id='i' class="fas fa-map-marker-alt"></i><a href="/recipes/mapsearch"> Map Search</a></li>
                 <li class="list-group-item-action"><i id='i' class="fas fa-search"></i><a href=""> Name Search</a></li>
