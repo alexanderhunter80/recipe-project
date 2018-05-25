@@ -104,19 +104,7 @@
                     console.log('Lat '+postLat+', Lng '+postLng);
                 })
                 
-                // open infoWindow on mouseover, close again when mouseout
-                var infoWindow;
-                google.maps.event.addListener(marker, 'mouseover', function(event){
-                    infoString = '<div id="content"><p>Latitude: '+event.latLng.lat()+'</p><p>Longitude: '+event.latLng.lng()+'</p></div>'
-                    console.log(infoString);
-                    infoWindow = new google.maps.InfoWindow({
-                        content: infoString
-                    })
-                    infoWindow.open(map, marker);
-                })
-                google.maps.event.addListener(marker, 'mouseout', function(event){
-                    infoWindow.close()
-                })
+
             });
 
             

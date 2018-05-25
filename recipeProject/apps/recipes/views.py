@@ -194,6 +194,22 @@ def show(request, n):
 
 
 
+def yours(request):
+
+    thisUser = Profile.objects.get(username=request.user)
+    allRecipes = thisUser.recipes.all()
+    print(allRecipes)
+    cookbooks = populateBooks()
+    context = {
+        'allRecipes' : allRecipes,
+        'cookbooks' : cookbooks
+    }
+
+    return render(request, 'recipes/allRecipes.html', context)
+
+
+
+
 
 def showAjax(request, n):
 
@@ -309,6 +325,7 @@ def mapSearchAjax(request):
         # entry['user'] = display name somehow
         entry['lat'] = r.location.latitude
         entry['lng'] = r.location.longitude
+        entry['user'] = r.user.username
         mapData.append(entry)
     print(mapData)
     dataDict = {'markers':mapData}
@@ -329,3 +346,6 @@ def searchResults(request):
 def logout_view(request):
     logout(request)
     return redirect("/")
+
+def home(request):
+    return  render(request, 'recipes/landing.html')
